@@ -1,5 +1,6 @@
 #include "grids.hpp"
 #include "ants.hpp"
+#include "drawing.hpp"
 #include <iostream>
 
 int main(void)
@@ -10,6 +11,7 @@ int main(void)
   
   auto grid = Grids::Grid(height, width);
   auto ant = Ants::Ant(height / 2, width / 2, Ants::Direction::NORTH);
+  auto window = Drawing::Window(800, 480, "Ant Farm");
 
   // DEBUG
   std::cout << "Height: " << grid.height() << std::endl;
