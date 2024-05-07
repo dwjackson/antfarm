@@ -1,0 +1,89 @@
+#include "ants.hpp"
+
+namespace Ants {
+
+  Direction turn_clockwise(Direction dirn)
+  {
+    switch (dirn) {
+      case Direction::NORTH:
+        return Direction::EAST;
+      case Direction::EAST:
+        return Direction::SOUTH;
+      case Direction::SOUTH:
+        return Direction::WEST;
+      case Direction::WEST:
+        return Direction::NORTH;
+    }
+  }
+
+  Direction turn_counterclockwise(Direction dirn)
+  {
+    switch (dirn) {
+      case Direction::NORTH:
+        return Direction::WEST;
+      case Direction::EAST:
+        return Direction::NORTH;
+      case Direction::SOUTH:
+        return Direction::EAST;
+      case Direction::WEST:
+        return Direction::SOUTH;
+    }
+  }  
+  
+  Ant::Ant(int row, int col, Direction dirn)
+  {
+    m_row = row;
+    m_col = col;
+    m_dirn = dirn;
+  }
+
+  int Ant::row() const
+  {
+    return m_row;
+  }
+
+  int Ant::col() const
+  {
+    return m_col;
+  }
+
+  Ant Ant::next(const Grids::Grid &grid) const
+  {
+    int row, col;
+    Direction dirn;
+
+    auto cell = grid.cell(m_row, m_col);    
+    switch (cell) {
+      case Grids::Colour::WHITE:
+        dirn = turn_clockwise(m_dirn);
+        break;
+      case Grids::Colour::BLACK:
+        dirn = turn_counterclockwise(m_dirn);
+        break;
+    }
+
+    row = m_row;
+    col = m_col;
+    switch (dirn) {
+      case Direction::NORTH:
+        row--;
+        row = row < 0 ? 0 : row;
+        break;
+      case Direction::EAST:
+        col++;
+        col = col >= grid.width() ? grid.width() - 1 : col;
+        break;
+      case Direction::SOUTH:
+        row++;
+        row = row >= grid.height() ? grid.height() - 1 : row;
+        break;
+      case Direction::WEST:
+        col--;
+        col = col < 0 ? 0 : col;
+        break;
+    }
+    
+    return Ant(row, col, dirn);
+  }
+}
+
