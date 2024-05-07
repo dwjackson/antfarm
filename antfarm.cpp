@@ -8,10 +8,21 @@ int main(void)
   const int height = 10;
   const int width = 40;
   const int iterations = 10;
+
+  const int screen_width = 800;
+  const int screen_height = 480;
   
   auto grid = Grids::Grid(height, width);
   auto ant = Ants::Ant(height / 2, width / 2, Ants::Direction::NORTH);
-  auto window = Drawing::Window(800, 480, "Ant Farm");
+  auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
+  while (!window.should_close()) {
+    auto drawing = window.draw();
+    drawing->clear_background();
+    auto rect = Drawing::Rectangle(20, 20);
+    auto pos = window.center(rect);
+    drawing->rectangle(pos, rect);
+    // TODO
+  }
 
   // DEBUG
   std::cout << "Height: " << grid.height() << std::endl;

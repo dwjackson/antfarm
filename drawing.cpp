@@ -3,8 +3,25 @@ extern "C" {
 }
 
 #include "drawing.hpp"
+#include <memory>
 
 namespace Drawing {
+
+  Point::Point(int x, int y)
+  {
+    m_x = x;
+    m_y = y;
+  }
+
+  int Point::x() const
+  {
+    return m_x;
+  }
+
+  int Point::y() const
+  {
+    return m_y;
+  }
 
   Window::Window(int width, int height, const char *title)
   {
@@ -16,5 +33,56 @@ namespace Drawing {
   Window::~Window()
   {
     CloseWindow();
+  }
+
+  std::unique_ptr<Context> Window::draw()
+  {
+    return std::unique_ptr<Context>(new Context());
+  }
+
+  bool Window::should_close()
+  {
+    return WindowShouldClose();
+  }
+
+  Point Window::center(const Rectangle &rect)
+  {
+    int x = m_screen_width / 2 - rect.width() / 2;
+    int y = m_screen_height / 2 - rect.height() / 2;
+    return Point(x, y);
+  }
+
+  Context::Context()
+  {
+    BeginDrawing();
+  }
+
+  Context::~Context()
+  {
+    EndDrawing();
+  }
+
+  void Context::clear_background()
+  {
+    ClearBackground(RAYWHITE);
+  }
+
+  void Context::rectangle(const Point &pos, const Rectangle &rect)
+  {
+    DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), BLACK);
+  }
+
+  Rectangle::Rectangle(int width, int height) : m_width(width), m_height(height)
+  {
+  }
+
+  int Rectangle::width() const
+  {
+    return m_width;
+  }
+
+  int Rectangle::height() const
+  {
+    return m_height;
   }
 } 
