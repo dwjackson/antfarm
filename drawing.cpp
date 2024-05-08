@@ -7,10 +7,8 @@ extern "C" {
 
 namespace Drawing {
 
-  Point::Point(int x, int y)
+  Point::Point(int x, int y) : m_x(x), m_y(y)
   {
-    m_x = x;
-    m_y = y;
   }
 
   int Point::x() const
@@ -23,11 +21,10 @@ namespace Drawing {
     return m_y;
   }
 
-  Window::Window(int width, int height, const char *title)
+  Window::Window(int width, int height, const char *title) : m_screen_width(width), m_screen_height(height)
   {
     InitWindow(width, height, title);
-    m_screen_width = width;
-    m_screen_height = height;
+    SetTargetFPS(60);
   }
 
   Window::~Window()
@@ -52,6 +49,11 @@ namespace Drawing {
     return Point(x, y);
   }
 
+  void Window::wait(double seconds)
+  {
+    WaitTime(seconds);
+  }
+
   Context::Context()
   {
     BeginDrawing();
@@ -67,9 +69,9 @@ namespace Drawing {
     ClearBackground(RAYWHITE);
   }
 
-  void Context::rectangle(const Point &pos, const Rectangle &rect)
+  void Context::rectangle(const Point &pos, const Rectangle &rect, Color colour)
   {
-    DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), BLACK);
+    DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), colour);
   }
 
   Rectangle::Rectangle(int width, int height) : m_width(width), m_height(height)

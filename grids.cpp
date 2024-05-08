@@ -5,11 +5,11 @@ Grids::Grid::Grid(int height, int width)
   m_height = height;
   m_width = width;
   
-  m_cells = new Colour*[height];
+  m_cells = new CellColour*[height];
   for (int i = 0; i < height; i++) {
-    m_cells[i] = new Colour[width];
+    m_cells[i] = new CellColour[width];
     for (int j = 0; j < width; j++) {
-      m_cells[i][j] = Colour::WHITE;
+      m_cells[i][j] = CellColour::CELL_WHITE;
     }
   }
 }
@@ -32,7 +32,7 @@ int Grids::Grid::width() const
   return m_width;
 }
 
-Grids::Colour Grids::Grid::cell(int row, int col) const
+Grids::CellColour Grids::Grid::cell(int row, int col) const
 {
   return m_cells[row][col];
 }
@@ -40,11 +40,11 @@ Grids::Colour Grids::Grid::cell(int row, int col) const
 void Grids::Grid::invert_cell(int row, int col)
 {
   switch (m_cells[row][col]) {
-    case Colour::WHITE:
-      m_cells[row][col] = Colour::BLACK;
+    case CellColour::CELL_WHITE:
+      m_cells[row][col] = CellColour::CELL_BLACK;
       break;
-    case Colour::BLACK:
-      m_cells[row][col] = Colour::WHITE;
+    case CellColour::CELL_BLACK:
+      m_cells[row][col] = CellColour::CELL_WHITE;
       break;
   }  
 }

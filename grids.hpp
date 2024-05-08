@@ -2,14 +2,14 @@
 #define GRIDS_HPP
 
 namespace Grids {
-  enum Colour {
-    WHITE,
-    BLACK
+  enum CellColour {
+    CELL_WHITE,
+    CELL_BLACK
   };
   
   class Grid {
     private:   
-      Colour **m_cells;
+      CellColour **m_cells;
       int m_height;
       int m_width;
     public:
@@ -17,7 +17,7 @@ namespace Grids {
       ~Grid();
       int height() const;
       int width() const;
-      Colour cell(int row, int col) const;
+      CellColour cell(int row, int col) const;
       void invert_cell(int row, int col);
   }; 
 }

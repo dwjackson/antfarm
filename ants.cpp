@@ -54,10 +54,10 @@ namespace Ants {
 
     auto cell = grid.cell(m_row, m_col);    
     switch (cell) {
-      case Grids::Colour::WHITE:
+      case Grids::CellColour::CELL_WHITE:
         dirn = turn_clockwise(m_dirn);
         break;
-      case Grids::Colour::BLACK:
+      case Grids::CellColour::CELL_BLACK:
         dirn = turn_counterclockwise(m_dirn);
         break;
     }
