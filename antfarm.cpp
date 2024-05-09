@@ -114,5 +114,5 @@ static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const s
   /* Draw the HUD */
   const int font_size = 20;
   auto hud_pos = Drawing::Point(0, screen_height - font_size);
-  drawing->text("[CLICK] Create Ant", hud_pos, font_size, DARKGRAY);
+  drawing->text("[CLICK] Create Ant\t[SPACE] Pause\t[ESC] Quit", hud_pos, font_size, DARKGRAY);
 }
