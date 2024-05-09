@@ -4,30 +4,42 @@ namespace Ants {
 
   Direction turn_clockwise(Direction dirn)
   {
+    Direction next;
     switch (dirn) {
       case Direction::NORTH:
-        return Direction::EAST;
+        next = Direction::EAST;
+        break;
       case Direction::EAST:
-        return Direction::SOUTH;
+        next = Direction::SOUTH;
+        break;
       case Direction::SOUTH:
-        return Direction::WEST;
+        next = Direction::WEST;
+        break;
       case Direction::WEST:
-        return Direction::NORTH;
+        next = Direction::NORTH;
+        break;
     }
+    return next;
   }
 
   Direction turn_counterclockwise(Direction dirn)
   {
+    Direction next;
     switch (dirn) {
       case Direction::NORTH:
-        return Direction::WEST;
+        next = Direction::WEST;
+        break;
       case Direction::EAST:
-        return Direction::NORTH;
+        next = Direction::NORTH;
+        break;
       case Direction::SOUTH:
-        return Direction::EAST;
+        next =Direction::EAST;
+        break;
       case Direction::WEST:
-        return Direction::SOUTH;
+        next = Direction::SOUTH;
+        break;
     }
+    return next;
   }  
   
   Ant::Ant(int row, int col, Direction dirn)
