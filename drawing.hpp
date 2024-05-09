@@ -39,6 +39,7 @@ namespace Drawing {
       ~Context();
       void clear_background();
       void rectangle(const Point &pos, const Rectangle &rect, Color colour);
+      void text(const char *text, Point &pos, int font_size, Color colour);
   };
 
   class Window {

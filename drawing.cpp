@@ -84,6 +84,11 @@ namespace Drawing {
     DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), colour);
   }
 
+  void Context::text(const char *text, Point &pos, int font_size, Color colour)
+  {
+    DrawText(text, pos.x(), pos.y(), font_size, colour);
+  }
+
   Rectangle::Rectangle(int width, int height) : m_width(width), m_height(height)
   {
   }

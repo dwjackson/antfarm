@@ -18,14 +18,14 @@
 const int side = 10;
 const int max_ants = 10;
 
+const int screen_width = 1200;
+const int screen_height = 720;
+
 static void add_ant(std::vector<Ants::Ant> &ants, int x, int y);
 static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants);
 
 int main(void)
 {
-  const int screen_width = 1200;
-  const int screen_height = 720;
-
   const int height = screen_height / side;
   const int width = screen_width / side;
   
@@ -65,7 +65,7 @@ int main(void)
       // Remove any ants that left the grid
       for (auto index : to_remove | std::views::reverse) {
         ants.erase(ants.begin() + index);
-      }
+      }    
 
       window.wait(0.05);
     }
@@ -87,6 +87,7 @@ static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const s
   drawing->clear_background();
   auto rect = Drawing::Rectangle(side, side);
 
+  /* Draw the grid */
   for (int i = 0; i < grid.height(); i++) {
     for (int j = 0; j < grid.width(); j++) {
       auto cell = grid.cell(i, j);
@@ -104,8 +105,14 @@ static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const s
     }
   }
 
+  /* Draw the ants */
   for (auto ant : ants) {
     auto pos = Drawing::Point(ant.col() * side, ant.row() * side);
     drawing->rectangle(pos, rect, RED);
   }
+
+  /* Draw the HUD */
+  const int font_size = 20;
+  auto hud_pos = Drawing::Point(0, screen_height - font_size);
+  drawing->text("[CLICK] Create Ant", hud_pos, font_size, DARKGRAY);
 }
