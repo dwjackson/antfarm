@@ -15,6 +15,11 @@ else()
 	message(FATAL_ERROR "Raylib not found")
 endif()
 
+# Tests
 find_package(Catch2 3 REQUIRED)
 add_executable(grids_test grids_test.cpp grids.cpp)
 target_link_libraries(grids_test PRIVATE Catch2::Catch2WithMain)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(grids_test)
