@@ -59,7 +59,7 @@ void Grids::Grid::invert_cell(int row, int col)
   }  
 }
 
-bool Grids::Grid::is_out_of_bounds(int row, int col)
+bool Grids::Grid::is_out_of_bounds(int row, int col) const
 {
   return row < 0 || row >= m_height || col < 0 || col >= m_width;
 }

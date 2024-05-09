@@ -12,8 +12,7 @@
 #include "ants.hpp"
 #include "drawing.hpp"
 #include "raylib.h"
-#include <vector>
-#include <ranges>
+#include "app_state.hpp"
 #include <string>
 #include <format>
 
@@ -23,47 +22,24 @@ const int max_ants = 10;
 const int screen_width = 1200;
 const int screen_height = 720;
 
-enum class ClickMode {
-  CREATE_ANT,
-  INVERT_COLOUR
-};
+typedef void (*click_handler)(AppState &state, int x, int y);
 
-class AppState {
-  private:
-    ClickMode m_click_mode;
-  public:
-    AppState()
-    {
-      m_click_mode = ClickMode::CREATE_ANT;
-    }
-    ClickMode click_mode() const
-     {
-      return m_click_mode;
-    }
-    void set_click_mode(ClickMode mode)
-    {
-      m_click_mode = mode;
-    }
-};
-
-static void add_ant(std::vector<Ants::Ant> &ants, int x, int y);
-static void invert_colour(Grids::Grid &grid, int x, int y);
-static void draw_scene(Drawing::Window &window, const AppState &state, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants);
+static void add_ant(AppState &state, int x, int y);
+static void invert_colour(AppState &state, int x, int y);
+static void draw_scene(Drawing::Window &window, const AppState &state);
 
 int main(void)
 {
   const int height = screen_height / side;
   const int width = screen_width / side;
   
-  auto grid = Grids::Grid(height, width);
-  std::vector<Ants::Ant> ants;
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
 
-  AppState state;
+  AppState state = AppState(height, width);
 
   bool is_paused = false;
   while (!window.should_close()) {
-    draw_scene(window, state, grid, ants);
+    draw_scene(window, state);
 
     // Change the click mode
     if (IsKeyPressed(KEY_ONE)) {
@@ -73,10 +49,16 @@ int main(void)
     }
 
     // Add an ant if the user clicks somewhere
-    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && ants.size() < max_ants) {
-      add_ant(ants, GetMouseX(), GetMouseY());
+    click_handler handler;
+    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < max_ants) {
+      handler = add_ant;
     } else if (state.click_mode() == ClickMode::INVERT_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      invert_colour(grid, GetMouseX(), GetMouseY());
+      handler = invert_colour;
+    } else {
+      handler = NULL;
+    }
+    if (handler) {
+      handler(state, GetMouseX(), GetMouseY());
     }
 
     // Pause if the user presses the spacebar
@@ -84,57 +66,39 @@ int main(void)
       is_paused = !is_paused;
     }
 
-    // Update the ants state
     if (!is_paused) {
-      std::vector<std::vector<Ants::Ant>::size_type> to_remove;
-      for (std::vector<Ants::Ant>::size_type i = 0; i < ants.size(); i++) {
-        auto ant = &ants[i];
-        auto row = ant->row();
-        auto col = ant->col();
-        grid.invert_cell(row, col);
-        auto next_ant = ant->next(grid);
-        if (grid.is_out_of_bounds(next_ant.row(), next_ant.col())) {
-          to_remove.push_back(i);
-        } else {
-          ants[i] = ant->next(grid);
-        }
-      }
-      // Remove any ants that left the grid
-      for (auto index : to_remove | std::views::reverse) {
-        ants.erase(ants.begin() + index);
-      }    
-
-      window.wait(0.05);
+      state.update_ants();
+      window.wait(state.tick_seconds());
     }
   }
 
   return 0;
 }
 
-static void add_ant(std::vector<Ants::Ant> &ants, int x, int y)
+static void add_ant(AppState &state, int x, int y)
 {
   int row = y / side;
   int col = x / side;
-  ants.push_back(Ants::Ant(row, col, Ants::Direction::NORTH));
+  state.add_ant(Ants::Ant(row, col, Ants::Direction::NORTH));
 }
 
-static void invert_colour(Grids::Grid &grid, int x, int y)
+static void invert_colour(AppState &state, int x, int y)
 {
   int row = y / side;
   int col = x / side;
-  grid.invert_cell(row, col);
+  state.grid_mut().invert_cell(row, col);
 }
 
-static void draw_scene(Drawing::Window &window, const AppState &state, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants)
+static void draw_scene(Drawing::Window &window, const AppState &state)
 {
   auto drawing = window.draw();
   drawing->clear_background();
   auto rect = Drawing::Rectangle(side, side);
 
   /* Draw the grid */
-  for (int i = 0; i < grid.height(); i++) {
-    for (int j = 0; j < grid.width(); j++) {
-      auto cell = grid.cell(i, j);
+  for (int i = 0; i < state.grid().height(); i++) {
+    for (int j = 0; j < state.grid().width(); j++) {
+      auto cell = state.grid().cell(i, j);
       auto pos = Drawing::Point(j * side, i * side);
       Color color;
       switch (cell) {
@@ -150,17 +114,14 @@ static void draw_scene(Drawing::Window &window, const AppState &state, const Gri
   }
 
   /* Draw the ants */
-  for (auto ant : ants) {
+  for (auto ant : state.ants()) {
     auto pos = Drawing::Point(ant.col() * side, ant.row() * side);
     drawing->rectangle(pos, rect, RED);
   }
 
   /* Draw the HUD */
   const int font_size = 20;
-  const char *click_control = state.click_mode() == ClickMode::CREATE_ANT ? "Create Ant" : "Invert Cell";
-  auto hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1] Insert Mode [2] Colour Change Mode", click_control);
   auto hud_pos = Drawing::Point(0, screen_height - font_size);
-
-  const char *str = hud.c_str();
-  drawing->text(str, hud_pos, font_size, DARKGRAY);
+  auto hud = state.hud();
+  drawing->text(hud, hud_pos, font_size, DARKGRAY);
 }
