@@ -4,7 +4,7 @@
 
 using namespace Grids;
 
-TEST_CASE("", "[ant]")
+TEST_CASE("white square turns clockwise and moves forward", "[ant]")
 {
   auto grid = Grids::Grid(5, 5);
   auto ant = Ants::Ant(2, 2, Ants::Direction::NORTH);
@@ -12,4 +12,17 @@ TEST_CASE("", "[ant]")
 
   REQUIRE(test_ant.row() == 2);
   REQUIRE(test_ant.col() == 3);
+}
+
+TEST_CASE("black square turns counterclockwise and moves forward", "[ant]")
+{
+  auto grid = Grids::Grid(5, 5);
+  grid.invert_cell(2, 2);
+  REQUIRE(grid.cell(2, 2) == Grids::CellColour::CELL_BLACK);
+
+  auto ant = Ants::Ant(2, 2, Ants::Direction::NORTH);
+  auto test_ant = ant.next(grid);
+
+  REQUIRE(test_ant.row() == 2);
+  REQUIRE(test_ant.col() == 1);
 }

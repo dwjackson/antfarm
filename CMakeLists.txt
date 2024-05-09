@@ -27,4 +27,5 @@ target_link_libraries(ants_test PRIVATE Catch2::Catch2WithMain)
 
 include(CTest)
 include(Catch)
-catch_discover_tests(grids_test ants_test)
+catch_discover_tests(grids_test)
+catch_discover_tests(ants_test)
