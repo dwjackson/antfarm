@@ -14,6 +14,8 @@
 #include "raylib.h"
 #include <vector>
 #include <ranges>
+#include <string>
+#include <format>
 
 const int side = 10;
 const int max_ants = 10;
@@ -21,8 +23,32 @@ const int max_ants = 10;
 const int screen_width = 1200;
 const int screen_height = 720;
 
+enum class ClickMode {
+  CREATE_ANT,
+  INVERT_COLOUR
+};
+
+class AppState {
+  private:
+    ClickMode m_click_mode;
+  public:
+    AppState()
+    {
+      m_click_mode = ClickMode::CREATE_ANT;
+    }
+    ClickMode click_mode() const
+     {
+      return m_click_mode;
+    }
+    void set_click_mode(ClickMode mode)
+    {
+      m_click_mode = mode;
+    }
+};
+
 static void add_ant(std::vector<Ants::Ant> &ants, int x, int y);
-static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants);
+static void invert_colour(Grids::Grid &grid, int x, int y);
+static void draw_scene(Drawing::Window &window, const AppState &state, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants);
 
 int main(void)
 {
@@ -33,13 +59,24 @@ int main(void)
   std::vector<Ants::Ant> ants;
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
 
+  AppState state;
+
   bool is_paused = false;
   while (!window.should_close()) {
-    draw_scene(window, grid, ants);
+    draw_scene(window, state, grid, ants);
+
+    // Change the click mode
+    if (IsKeyPressed(KEY_ONE)) {
+      state.set_click_mode(ClickMode::CREATE_ANT);
+    } else if (IsKeyPressed(KEY_TWO)) {
+      state.set_click_mode(ClickMode::INVERT_COLOUR);
+    }
 
     // Add an ant if the user clicks somewhere
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && ants.size() < max_ants) {
+    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && ants.size() < max_ants) {
       add_ant(ants, GetMouseX(), GetMouseY());
+    } else if (state.click_mode() == ClickMode::INVERT_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+      invert_colour(grid, GetMouseX(), GetMouseY());
     }
 
     // Pause if the user presses the spacebar
@@ -81,7 +118,14 @@ static void add_ant(std::vector<Ants::Ant> &ants, int x, int y)
   ants.push_back(Ants::Ant(row, col, Ants::Direction::NORTH));
 }
 
-static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants)
+static void invert_colour(Grids::Grid &grid, int x, int y)
+{
+  int row = y / side;
+  int col = x / side;
+  grid.invert_cell(row, col);
+}
+
+static void draw_scene(Drawing::Window &window, const AppState &state, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants)
 {
   auto drawing = window.draw();
   drawing->clear_background();
@@ -113,6 +157,10 @@ static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const s
 
   /* Draw the HUD */
   const int font_size = 20;
+  const char *click_control = state.click_mode() == ClickMode::CREATE_ANT ? "Create Ant" : "Invert Cell";
+  auto hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1] Insert Mode [2] Colour Change Mode", click_control);
   auto hud_pos = Drawing::Point(0, screen_height - font_size);
-  drawing->text("[CLICK] Create Ant\t[SPACE] Pause\t[ESC] Quit", hud_pos, font_size, DARKGRAY);
+
+  const char *str = hud.c_str();
+  drawing->text(str, hud_pos, font_size, DARKGRAY);
 }
