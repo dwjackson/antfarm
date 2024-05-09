@@ -2,10 +2,14 @@
 #include "ants.hpp"
 #include "drawing.hpp"
 #include "raylib.h"
+#include <vector>
+#include <ranges>
 
 const int side = 10;
+const int max_ants = 10;
 
-static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const Ants::Ant &ant);
+static void add_ant(std::vector<Ants::Ant> &ants, int x, int y);
+static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants);
 
 int main(void)
 {
@@ -16,25 +20,58 @@ int main(void)
   const int width = screen_width / side;
   
   auto grid = Grids::Grid(height, width);
-  auto ant = Ants::Ant(height / 2, width / 2, Ants::Direction::NORTH);
+  std::vector<Ants::Ant> ants;
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
 
+  bool is_paused = false;
   while (!window.should_close()) {
-    draw_scene(window, grid, ant);
+    draw_scene(window, grid, ants);
 
-    // Update the ant state
-    auto row = ant.row();
-    auto col = ant.col();
-    ant = ant.next(grid);
-    grid.invert_cell(row, col);
+    // Add an ant if the user clicks somewhere
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && ants.size() < max_ants) {
+      add_ant(ants, GetMouseX(), GetMouseY());
+    }
 
-    window.wait(0.05);
+    // Pause if the user presses the spacebar
+    if (IsKeyPressed(KEY_SPACE)) {
+      is_paused = !is_paused;
+    }
+
+    // Update the ants state
+    if (!is_paused) {
+      std::vector<std::vector<Ants::Ant>::size_type> to_remove;
+      for (std::vector<Ants::Ant>::size_type i = 0; i < ants.size(); i++) {
+        auto ant = &ants[i];
+        auto row = ant->row();
+        auto col = ant->col();
+        grid.invert_cell(row, col);
+        auto next_ant = ant->next(grid);
+        if (grid.is_out_of_bounds(next_ant.row(), next_ant.col())) {
+          to_remove.push_back(i);
+        } else {
+          ants[i] = ant->next(grid);
+        }
+      }
+      // Remove any ants that left the grid
+      for (auto index : to_remove | std::views::reverse) {
+        ants.erase(ants.begin() + index);
+      }
+
+      window.wait(0.05);
+    }
   }
 
   return 0;
 }
 
-static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const Ants::Ant &ant)
+static void add_ant(std::vector<Ants::Ant> &ants, int x, int y)
+{
+  int row = y / side;
+  int col = x / side;
+  ants.push_back(Ants::Ant(row, col, Ants::Direction::NORTH));
+}
+
+static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const std::vector<Ants::Ant> &ants)
 {
   auto drawing = window.draw();
   drawing->clear_background();
@@ -57,6 +94,8 @@ static void draw_scene(Drawing::Window &window, const Grids::Grid &grid, const A
     }
   }
 
-  auto pos = Drawing::Point(ant.col() * side, ant.row() * side);
-  drawing->rectangle(pos, rect, RED);
+  for (auto ant : ants) {
+    auto pos = Drawing::Point(ant.col() * side, ant.row() * side);
+    drawing->rectangle(pos, rect, RED);
+  }
 }

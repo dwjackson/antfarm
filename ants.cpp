@@ -67,19 +67,15 @@ namespace Ants {
     switch (dirn) {
       case Direction::NORTH:
         row--;
-        row = row < 0 ? 0 : row;
         break;
       case Direction::EAST:
         col++;
-        col = col >= grid.width() ? grid.width() - 1 : col;
         break;
       case Direction::SOUTH:
         row++;
-        row = row >= grid.height() ? grid.height() - 1 : row;
         break;
       case Direction::WEST:
         col--;
-        col = col < 0 ? 0 : col;
         break;
     }
     
