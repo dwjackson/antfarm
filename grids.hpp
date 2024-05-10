@@ -12,7 +12,8 @@
 #define GRIDS_HPP
 
 namespace Grids {
-  enum CellColour {
+
+  enum class CellColour {
     CELL_WHITE,
     CELL_BLACK
   };

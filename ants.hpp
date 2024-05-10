@@ -14,7 +14,8 @@
 #include "grids.hpp"
 
 namespace Ants {
-  enum Direction {
+
+  enum class Direction {
     NORTH,
     EAST,
     SOUTH,
