@@ -42,6 +42,7 @@ class AppState {
     const char *hud() const;
     void speed_up();
     void slow_down();
+    void reset();
 };
 
 

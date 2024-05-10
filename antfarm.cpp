@@ -84,6 +84,11 @@ int main(void)
       state.update_ants();
     }
 
+    // Reset the state if "R" is pressed
+    if (IsKeyPressed(KEY_R)) {
+      state.reset();
+    }
+
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.update_ants();

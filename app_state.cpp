@@ -112,3 +112,9 @@ void AppState::slow_down()
     m_tick_seconds += tick_delta;
   }
 }
+
+void AppState::reset()
+{
+  m_ants.clear();
+  m_grid.reset();
+}

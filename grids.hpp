@@ -30,6 +30,7 @@ namespace Grids {
       CellColour cell(int row, int col) const;
       void invert_cell(int row, int col);
       bool is_out_of_bounds(int row, int col) const;
+      void reset();
   }; 
 }
 

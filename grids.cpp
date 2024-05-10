@@ -63,3 +63,12 @@ bool Grids::Grid::is_out_of_bounds(int row, int col) const
 {
   return row < 0 || row >= m_height || col < 0 || col >= m_width;
 }
+
+void Grids::Grid::reset()
+{
+  for (int i = 0; i < m_height; i++) {
+    for (int j = 0; j < m_width; j++) {
+      m_cells[i][j] = CellColour::CELL_WHITE;
+    }
+  }
+}
