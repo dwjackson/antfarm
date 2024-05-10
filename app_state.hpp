@@ -32,7 +32,7 @@ class AppState {
     AppState(int height, int width);
     ClickMode click_mode() const;
     void set_click_mode(ClickMode mode);
-    int tick_seconds() const;
+    double tick_seconds() const;
     const Grids::Grid &grid() const;
     Grids::Grid &grid_mut();
     void add_ant(Ants::Ant ant);
@@ -40,6 +40,8 @@ class AppState {
     int ants_count() const;
     const std::vector<Ants::Ant> &ants() const;
     const char *hud() const;
+    void speed_up();
+    void slow_down();
 };
 
 

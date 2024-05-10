@@ -11,7 +11,7 @@ project(AntFarm)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp)
+add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp timer.cpp)
 target_compile_options(antfarm PRIVATE -Wall -Wextra)
 
 find_library(raylib raylib PATHS /usr/lib)

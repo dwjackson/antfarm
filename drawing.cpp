@@ -59,11 +59,6 @@ namespace Drawing {
     return Point(x, y);
   }
 
-  void Window::wait(double seconds)
-  {
-    WaitTime(seconds);
-  }
-
   Context::Context()
   {
     BeginDrawing();

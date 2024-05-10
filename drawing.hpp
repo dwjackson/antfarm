@@ -52,7 +52,6 @@ namespace Drawing {
       std::unique_ptr<Context> draw();
       bool should_close();
       Point center(const Rectangle &rect);
-      void wait(double seconds);
   };
 
 }

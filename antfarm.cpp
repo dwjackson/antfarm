@@ -13,6 +13,7 @@
 #include "drawing.hpp"
 #include "raylib.h"
 #include "app_state.hpp"
+#include "timer.hpp"
 #include <string>
 #include <format>
 
@@ -34,10 +35,11 @@ int main(void)
   const int width = screen_width / side;
   
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
-
+  Timer timer;
   AppState state = AppState(height, width);
 
   bool is_paused = false;
+  timer.start();
   while (!window.should_close()) {
     draw_scene(window, state);
 
@@ -61,6 +63,14 @@ int main(void)
       handler(state, GetMouseX(), GetMouseY());
     }
 
+    // Speed up or slow down time
+    bool is_plus_pressed = (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && IsKeyPressed(KEY_EQUAL);
+    if (is_plus_pressed) {
+      state.speed_up();
+    } else if (IsKeyPressed(KEY_MINUS)) {
+      state.slow_down();
+    }
+
     // Pause if the user presses the spacebar
     if (IsKeyPressed(KEY_SPACE)) {
       is_paused = !is_paused;
@@ -74,9 +84,10 @@ int main(void)
       state.update_ants();
     }
 
-    if (!is_paused) {
+    double elapsed_time = timer.elapsed();
+    if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.update_ants();
-      window.wait(state.tick_seconds());
+      timer.restart();
     }
   }
 

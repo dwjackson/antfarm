@@ -17,9 +17,13 @@
 #define CREATE_ANT_STR "Create Ant"
 #define INVERT_CELL_STR "Invert Cell"
 
+const double tick_min = 0.05;
+const double tick_max = 1.00;
+const double tick_delta = 0.1;
+
 AppState::AppState(int height, int width) : m_grid(height, width)
 {
-  m_tick_seconds = 0.05;
+  m_tick_seconds = tick_min;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -35,7 +39,7 @@ void AppState::set_click_mode(ClickMode mode)
   m_hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1] Insert Mode [2] Colour Change Mode", click_control);
 }
 
-int AppState::tick_seconds() const
+double AppState::tick_seconds() const
 {
   return m_tick_seconds;
 }
@@ -89,4 +93,22 @@ const std::vector<Ants::Ant> &AppState::ants() const
 const char *AppState::hud() const
 {
   return m_hud.c_str();
+}
+
+void AppState::speed_up()
+{
+  if (m_tick_seconds - tick_delta <= tick_min) {
+    m_tick_seconds = tick_min;
+  } else {
+    m_tick_seconds -= tick_delta;
+  }
+}
+
+void AppState::slow_down()
+{
+  if (m_tick_seconds + tick_delta >= tick_max) {
+    m_tick_seconds = tick_max;
+  } else {
+    m_tick_seconds += tick_delta;
+  }
 }
