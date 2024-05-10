@@ -11,6 +11,7 @@
 #include "app_state.hpp"
 #include "palette.hpp"
 #include "raylib.h"
+#include "ants.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
@@ -40,4 +41,19 @@ TEST_CASE("cycle a cell where rules are same size as palette", "[app_state]")
 
   auto index = state.grid().cell(0, 0);
   REQUIRE(index == 2);
+}
+
+TEST_CASE("count iterations", "[app_state]")
+{
+  
+  Color colours[] = { RAYWHITE, BLACK };
+  auto colours_size = 3;
+  auto palette = Palette(colours, colours_size);
+  auto state = AppState(100, 50, "RL", palette);
+
+  REQUIRE(state.iterations() == 0);
+  state.add_ant(Ants::Ant(10, 10, Ants::Direction::NORTH));
+  state.update_ants();
+  state.update_ants();
+  REQUIRE(state.iterations() == 2);
 }

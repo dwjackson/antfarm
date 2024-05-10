@@ -18,6 +18,9 @@
 #include "rules.hpp"
 #include <cstdio>
 #include <cstdlib>
+#include <format>
+#include <string>
+#include <string_view>
 
 const int side = 10;
 const int max_ants = 10;
@@ -121,6 +124,11 @@ int main(int argc, char *argv[])
       state.reset();
     }
 
+    // Print iterations if "I" is pressed
+    if (IsKeyPressed(KEY_I)) {
+      state.toggle_show_iterations();
+    }
+
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.update_ants();
@@ -173,4 +181,11 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
   drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
   auto hud = state.hud();
   drawing->text(hud, hud_pos, font_size, DARKGRAY);
+
+  if (state.show_iterations())
+  {
+    auto iterations_pos = Drawing::Point(0, 0);
+    auto iterations = std::format("Iterations: {}", state.iterations());
+    drawing->text(iterations.c_str(), iterations_pos, font_size, DARKGRAY);
+  }
 }

@@ -27,6 +27,8 @@ AppState::AppState(int height, int width, const char *rules, Palette palette) : 
   m_tick_seconds = tick_min;
   m_rules = rules;
   m_rules_len = strlen(rules);
+  m_iterations = 0;
+  m_show_iterations = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -82,7 +84,9 @@ void AppState::update_ants()
   // Remove any ants that left the grid
   for (auto index : to_remove | std::views::reverse) {
     m_ants.erase(m_ants.begin() + index);
-  }    
+  }
+
+  m_iterations++;
 }
 
 int AppState::ants_count() const
@@ -122,6 +126,7 @@ void AppState::reset()
 {
   m_ants.clear();
   m_grid.reset();
+  m_iterations = 0;
 }
 
 Color AppState::colour(int index) const
@@ -134,4 +139,19 @@ void AppState::cycle_colour(int row, int col)
   auto index = m_grid.cell(row, col);
   auto next_index = m_palette.next(index, m_rules_len);
   m_grid.set_cell(row, col, next_index);
+}
+
+int AppState::iterations() const
+{
+  return m_iterations;
+}
+
+void AppState::toggle_show_iterations()
+{
+  m_show_iterations = !m_show_iterations;
+}
+
+bool AppState::show_iterations() const
+{
+  return m_show_iterations;
 }

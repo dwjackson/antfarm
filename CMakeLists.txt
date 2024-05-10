@@ -30,7 +30,7 @@ target_link_libraries(grids_test PRIVATE Catch2::Catch2WithMain)
 add_executable(ants_test ants_test.cpp ants.cpp grids.cpp palette.cpp)
 target_link_libraries(ants_test PRIVATE Catch2::Catch2WithMain)
 
-add_executable(app_state_test app_state_test.cpp app_state.cpp ants_test.cpp ants.cpp grids.cpp palette.cpp)
+add_executable(app_state_test app_state_test.cpp app_state.cpp ants.cpp grids.cpp palette.cpp)
 target_link_libraries(app_state_test PRIVATE Catch2::Catch2WithMain)
 
 add_executable(rules_test rules_test.cpp palette.cpp rules.cpp)

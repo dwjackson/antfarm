@@ -32,6 +32,8 @@ class AppState {
     const char *m_rules;
     int m_rules_len;
     Palette m_palette;
+    int m_iterations;
+    bool m_show_iterations;
   public:
     AppState(int height, int width, const char *rules, Palette palette);
     ClickMode click_mode() const;
@@ -49,6 +51,9 @@ class AppState {
     void reset();
     Color colour(int index) const;
     void cycle_colour(int row, int col);
+    int iterations() const;
+    void toggle_show_iterations();
+    bool show_iterations() const;
 };
 
 
