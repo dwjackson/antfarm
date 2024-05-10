@@ -48,7 +48,7 @@ TEST_CASE("count iterations", "[app_state]")
 {
   
   Color colours[] = { RAYWHITE, BLACK };
-  auto colours_size = 3;
+  auto colours_size = 2;
   auto palette = Palette(colours, colours_size);
   auto state = AppState(100, 50, "RL", palette);
 
@@ -69,4 +69,17 @@ TEST_CASE("tick", "[app_state]")
   state.tick();
   REQUIRE(state.ants()[0].row() == 5);  
   REQUIRE(state.ants()[0].col() == 6);  
+}
+
+TEST_CASE("iteration count does not increase if there are no ants", "[app_state]")
+{
+  
+  Color colours[] = { RAYWHITE, BLACK };
+  auto colours_size = 2;
+  auto palette = Palette(colours, colours_size);
+  auto state = AppState(100, 50, "RL", palette);
+
+  REQUIRE(state.iterations() == 0);
+  state.tick();
+  REQUIRE(state.iterations() == 0);
 }

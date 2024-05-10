@@ -94,7 +94,9 @@ void AppState::tick()
     m_ants.erase(m_ants.begin() + index);
   }
 
-  m_iterations++;
+  if (m_ants.size() > 0) {
+    m_iterations++;
+  }
 }
 
 int AppState::ants_count() const
