@@ -66,6 +66,14 @@ int main(void)
       is_paused = !is_paused;
     }
 
+    // Move time forward by a single tick if "T" is pressed
+    if (IsKeyPressed(KEY_T)) {
+      if (!is_paused) {
+        is_paused = true;
+      }
+      state.update_ants();
+    }
+
     if (!is_paused) {
       state.update_ants();
       window.wait(state.tick_seconds());
