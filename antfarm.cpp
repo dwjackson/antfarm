@@ -22,6 +22,7 @@ const int max_ants = 10;
 
 const int screen_width = 1200;
 const int screen_height = 720;
+const int font_size = 20;
 
 typedef void (*click_handler)(AppState &state, int x, int y);
 
@@ -31,7 +32,7 @@ static void draw_scene(Drawing::Window &window, const AppState &state);
 
 int main(void)
 {
-  const int height = screen_height / side;
+  const int height = screen_height / side - font_size / side;
   const int width = screen_width / side;
   
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
@@ -144,8 +145,9 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
   }
 
   /* Draw the HUD */
-  const int font_size = 20;
   auto hud_pos = Drawing::Point(0, screen_height - font_size);
+  auto hud_rectangle = Drawing::Rectangle(screen_width, font_size);
+  drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
   auto hud = state.hud();
   drawing->text(hud, hud_pos, font_size, DARKGRAY);
 }
