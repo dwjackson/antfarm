@@ -48,6 +48,15 @@ The format of `[RULES]` is a string of `L` and `R` characters--e.g. `LLRR`.
 To run AntFarm with the default ruleset (Langton's Ant) run the executable
 without arguments.
 
+Some interesting rules to try:
+
+* `RL` (the basic Langton's Ant rule)
+* `LLRR`
+* `RLR`
+* `LRRRRRLLR`
+* `LLRRRLRLRLLR`
+* `RRLLLRLLLRRR`
+
 ## Controls
 
 The controls of AntFarm are as follows:
