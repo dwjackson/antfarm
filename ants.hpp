@@ -13,6 +13,8 @@
 
 #include "grids.hpp"
 
+#define ANT_STANDARD_RULE "RL"
+
 namespace Ants {
 
   enum class Direction {
@@ -31,8 +33,9 @@ namespace Ants {
       Ant(int row, int col, Direction dirn);
       int row() const;
       int col() const;
-      Ant next(const Grids::Grid &grid) const;
+      Ant next(const Grids::Grid &grid, const char *rules) const;
   };
+
 }
 
 #endif /* ANTS_HPP */

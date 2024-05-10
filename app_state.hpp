@@ -13,6 +13,7 @@
 
 #include "grids.hpp"
 #include "ants.hpp"
+#include "palette.hpp"
 #include <vector>
 #include <string>
 
@@ -28,8 +29,11 @@ class AppState {
     Grids::Grid m_grid;
     std::vector<Ants::Ant> m_ants;
     std::string m_hud;
+    const char *m_rules;
+    int m_rules_len;
+    Palette m_palette;
   public:
-    AppState(int height, int width);
+    AppState(int height, int width, const char *rules, Palette palette);
     ClickMode click_mode() const;
     void set_click_mode(ClickMode mode);
     double tick_seconds() const;
@@ -43,6 +47,8 @@ class AppState {
     void speed_up();
     void slow_down();
     void reset();
+    Color colour(int index) const;
+    void cycle_colour(int row, int col);
 };
 
 

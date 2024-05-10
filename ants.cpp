@@ -9,6 +9,7 @@
  */
 
 #include "ants.hpp"
+#include <cstdlib>
 
 namespace Ants {
 
@@ -69,19 +70,23 @@ namespace Ants {
     return m_col;
   }
 
-  Ant Ant::next(const Grids::Grid &grid) const
+  Ant Ant::next(const Grids::Grid &grid, const char *rules) const
   {
     int row, col;
     Direction dirn;
 
-    auto cell = grid.cell(m_row, m_col);    
-    switch (cell) {
-      case Grids::CellColour::CELL_WHITE:
+    auto index = grid.cell(m_row, m_col);    
+    char ch = rules[index];
+
+    switch (ch) {
+      case 'R':
         dirn = turn_clockwise(m_dirn);
         break;
-      case Grids::CellColour::CELL_BLACK:
+      case 'L':
         dirn = turn_counterclockwise(m_dirn);
         break;
+      default:
+        std::abort();
     }
 
     row = m_row;
@@ -103,5 +108,6 @@ namespace Ants {
     
     return Ant(row, col, dirn);
   }
+
 }
 

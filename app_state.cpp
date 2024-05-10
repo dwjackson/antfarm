@@ -13,6 +13,7 @@
 #include <ranges>
 #include <string>
 #include <format>
+#include <cstring>
 
 #define CREATE_ANT_STR "Create Ant"
 #define INVERT_CELL_STR "Invert Cell"
@@ -21,9 +22,11 @@ const double tick_min = 0.05;
 const double tick_max = 1.00;
 const double tick_delta = 0.1;
 
-AppState::AppState(int height, int width) : m_grid(height, width)
+AppState::AppState(int height, int width, const char *rules, Palette palette) : m_grid(height, width), m_palette(palette)
 {
   m_tick_seconds = tick_min;
+  m_rules = rules;
+  m_rules_len = strlen(rules);
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -66,12 +69,14 @@ void AppState::update_ants()
     auto ant = &m_ants[i];
     auto row = ant->row();
     auto col = ant->col();
-    m_grid.invert_cell(row, col);
-    auto next_ant = ant->next(m_grid);
+    auto index = m_grid.cell(row, col);
+    auto next_index = m_palette.next(index, m_rules_len);
+    m_grid.set_cell(row, col, next_index);
+    auto next_ant = ant->next(m_grid, m_rules);
     if (m_grid.is_out_of_bounds(next_ant.row(), next_ant.col())) {
       to_remove.push_back(i);
     } else {
-      m_ants[i] = ant->next(m_grid);
+      m_ants[i] = next_ant;
     }
   }
   // Remove any ants that left the grid
@@ -117,4 +122,16 @@ void AppState::reset()
 {
   m_ants.clear();
   m_grid.reset();
+}
+
+Color AppState::colour(int index) const
+{
+  return m_palette[index];
+}
+
+void AppState::cycle_colour(int row, int col)
+{
+  auto index = m_grid.cell(row, col);
+  auto next_index = m_palette.next(index, m_rules_len);
+  m_grid.set_cell(row, col, next_index);
 }

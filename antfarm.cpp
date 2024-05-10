@@ -13,9 +13,11 @@
 #include "drawing.hpp"
 #include "raylib.h"
 #include "app_state.hpp"
+#include "palette.hpp"
 #include "timer.hpp"
-#include <string>
-#include <format>
+#include "rules.hpp"
+#include <cstdio>
+#include <cstdlib>
 
 const int side = 10;
 const int max_ants = 10;
@@ -27,17 +29,46 @@ const int font_size = 20;
 typedef void (*click_handler)(AppState &state, int x, int y);
 
 static void add_ant(AppState &state, int x, int y);
-static void invert_colour(AppState &state, int x, int y);
+static void cycle_colour(AppState &state, int x, int y);
 static void draw_scene(Drawing::Window &window, const AppState &state);
 
-int main(void)
+int main(int argc, char *argv[])
 {
   const int height = screen_height / side - font_size / side;
   const int width = screen_width / side;
   
   auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
   Timer timer;
-  AppState state = AppState(height, width);
+
+  Color colours[] = {
+    RAYWHITE,
+    BLACK,
+    DARKPURPLE,
+    VIOLET,
+    PURPLE,
+    DARKBLUE,
+    BLUE,
+    SKYBLUE,
+    DARKGREEN,
+    LIME,
+    GREEN,
+    MAROON,
+    PINK,
+    ORANGE,
+    GOLD,
+    YELLOW
+  };
+  int colours_count = sizeof(colours) / sizeof(colours[0]);
+  const char *rules = ANT_STANDARD_RULE;
+  if (argc > 1) {
+    rules = argv[1];
+  }
+  Palette palette = Palette(colours, colours_count);
+  if (!rules_validate(rules, palette)) {
+    fprintf(stderr, "Invalid rules\n");
+    std::abort();
+  }
+  AppState state = AppState(height, width, rules, palette);
 
   bool is_paused = false;
   timer.start();
@@ -56,7 +87,7 @@ int main(void)
     if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < max_ants) {
       handler = add_ant;
     } else if (state.click_mode() == ClickMode::INVERT_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      handler = invert_colour;
+      handler = cycle_colour;
     } else {
       handler = NULL;
     }
@@ -107,11 +138,11 @@ static void add_ant(AppState &state, int x, int y)
   state.add_ant(Ants::Ant(row, col, Ants::Direction::NORTH));
 }
 
-static void invert_colour(AppState &state, int x, int y)
+static void cycle_colour(AppState &state, int x, int y)
 {
   int row = y / side;
   int col = x / side;
-  state.grid_mut().invert_cell(row, col);
+  state.cycle_colour(row, col);
 }
 
 static void draw_scene(Drawing::Window &window, const AppState &state)
@@ -123,18 +154,10 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
   /* Draw the grid */
   for (int i = 0; i < state.grid().height(); i++) {
     for (int j = 0; j < state.grid().width(); j++) {
-      auto cell = state.grid().cell(i, j);
+      auto colour_index = state.grid().cell(i, j);
       auto pos = Drawing::Point(j * side, i * side);
-      Color color;
-      switch (cell) {
-        case Grids::CellColour::CELL_WHITE:
-          color = WHITE;
-          break;
-        case Grids::CellColour::CELL_BLACK:
-          color = BLACK;
-          break;
-      }
-      drawing->rectangle(pos, rect, color);
+      auto colour = state.colour(colour_index);
+      drawing->rectangle(pos, rect, colour);
     }
   }
 

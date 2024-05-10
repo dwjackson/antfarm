@@ -15,11 +15,11 @@ Grids::Grid::Grid(int height, int width)
   m_height = height;
   m_width = width;
   
-  m_cells = new CellColour*[height];
+  m_cells = new int*[height];
   for (int i = 0; i < height; i++) {
-    m_cells[i] = new CellColour[width];
+    m_cells[i] = new int[width];
     for (int j = 0; j < width; j++) {
-      m_cells[i][j] = CellColour::CELL_WHITE;
+      m_cells[i][j] = 0;
     }
   }
 }
@@ -42,21 +42,14 @@ int Grids::Grid::width() const
   return m_width;
 }
 
-Grids::CellColour Grids::Grid::cell(int row, int col) const
+int Grids::Grid::cell(int row, int col) const
 {
   return m_cells[row][col];
 }
 
-void Grids::Grid::invert_cell(int row, int col)
+void Grids::Grid::set_cell(int row, int col, int value)
 {
-  switch (m_cells[row][col]) {
-    case CellColour::CELL_WHITE:
-      m_cells[row][col] = CellColour::CELL_BLACK;
-      break;
-    case CellColour::CELL_BLACK:
-      m_cells[row][col] = CellColour::CELL_WHITE;
-      break;
-  }  
+  m_cells[row][col] = value;
 }
 
 bool Grids::Grid::is_out_of_bounds(int row, int col) const
@@ -68,7 +61,7 @@ void Grids::Grid::reset()
 {
   for (int i = 0; i < m_height; i++) {
     for (int j = 0; j < m_width; j++) {
-      m_cells[i][j] = CellColour::CELL_WHITE;
+      m_cells[i][j] = 0;
     }
   }
 }

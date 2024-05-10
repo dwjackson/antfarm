@@ -8,14 +8,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 Copyright (c) 2024 David Jackson
 -->
 
-# Ant Farm
+# AntFarm
 
-Ant Farm is a program that runs the cellular automaton
+AntFarm is a program that runs the cellular automaton
 [Langton's Ant](https://en.wikipedia.org/wiki/Langton%27s_ant).
 
 ## Building & Running
 
-Ant Farm depends upon:
+AntFarm depends upon:
 
 * A C++20 compiler
 * [Raylib version 5.0](https://www.raylib.com/)
@@ -39,13 +39,24 @@ $ make test
 
 ## Usage
 
-The controls of Ant Farm are as follows:
+```sh
+$ antfarm [RULES]
+```
+
+The format of `[RULES]` is a string of `L` and `R` characters--e.g. `LLRR`.
+
+To run AntFarm with the default ruleset (Langton's Ant) run the executable
+without arguments.
+
+## Controls
+
+The controls of AntFarm are as follows:
 
 * Click on the screen to add an ant at that location
 * Press `1` to make each click create a new ant (this is the default)
 * Press `2` to make each click invert the colour of the clicked square
 * Press `ESC` to quit
-* Press `R` to reset (i.e. remove all ands and reset all grid cells to white)
+* Press `R` to reset (i.e. remove all ants and reset all grid cells to white)
 * Press `SPACE` to stop/start the progression of time
 * Press `T` to advance time by a single tick (this will also "stop time")
 * Press `+` to speed up the time between ticks
