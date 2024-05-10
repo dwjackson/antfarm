@@ -20,6 +20,7 @@ Ant Farm depends upon:
 * A C++20 compiler
 * [Raylib version 5.0](https://www.raylib.com/)
 * [CMake](https://cmake.org/) (build dependency only)
+* [Catch2](https://github.com/catchorg/Catch2) (test dependency only)
 
 To build it, create a `build` directory and use CMake:
 
@@ -29,6 +30,12 @@ $ cd build
 $ cmake ..
 $ make
 ````
+
+To run the unit tests, in the build directory:
+
+```sh
+$ make test
+```
 
 ## Usage
 
