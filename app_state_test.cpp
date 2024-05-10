@@ -12,6 +12,7 @@
 #include "palette.hpp"
 #include "raylib.h"
 #include "ants.hpp"
+#include "ants.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
@@ -53,7 +54,19 @@ TEST_CASE("count iterations", "[app_state]")
 
   REQUIRE(state.iterations() == 0);
   state.add_ant(Ants::Ant(10, 10, Ants::Direction::NORTH));
-  state.update_ants();
-  state.update_ants();
+  state.tick();
+  state.tick();
   REQUIRE(state.iterations() == 2);
+}
+
+TEST_CASE("tick", "[app_state]")
+{
+  Color colours[] = { RAYWHITE, BLACK };
+  auto colours_size = 2;
+  auto palette = Palette(colours, colours_size);
+  auto state = AppState(100, 50, "RL", palette);
+  state.add_ant(Ants::Ant(5, 5, Ants::Direction::NORTH));
+  state.tick();
+  REQUIRE(state.ants()[0].row() == 5);  
+  REQUIRE(state.ants()[0].col() == 6);  
 }

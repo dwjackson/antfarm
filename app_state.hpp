@@ -42,7 +42,7 @@ class AppState {
     const Grids::Grid &grid() const;
     Grids::Grid &grid_mut();
     void add_ant(Ants::Ant ant);
-    void update_ants();
+    void tick();
     int ants_count() const;
     const std::vector<Ants::Ant> &ants() const;
     const char *hud() const;

@@ -64,17 +64,25 @@ void AppState::add_ant(Ants::Ant ant)
   m_ants.push_back(ant);
 }
 
-void AppState::update_ants()
+void AppState::tick()
 {
   std::vector<std::vector<Ants::Ant>::size_type> to_remove;
   for (std::vector<Ants::Ant>::size_type i = 0; i < m_ants.size(); i++) {
     auto ant = &m_ants[i];
+
+    // Compute the next ant
+    auto next_ant = ant->next(m_grid, m_rules);
+
+    // Compute the next cell colour
     auto row = ant->row();
     auto col = ant->col();
     auto index = m_grid.cell(row, col);
     auto next_index = m_palette.next(index, m_rules_len);
+
+    // Change the colour of the cell
     m_grid.set_cell(row, col, next_index);
-    auto next_ant = ant->next(m_grid, m_rules);
+
+    // Move the ant
     if (m_grid.is_out_of_bounds(next_ant.row(), next_ant.col())) {
       to_remove.push_back(i);
     } else {

@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
       if (!is_paused) {
         is_paused = true;
       }
-      state.update_ants();
+      state.tick();
     }
 
     // Reset the state if "R" is pressed
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
-      state.update_ants();
+      state.tick();
       timer.restart();
     }
   }
