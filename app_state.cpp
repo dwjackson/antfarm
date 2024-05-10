@@ -89,6 +89,7 @@ void AppState::tick()
       m_ants[i] = next_ant;
     }
   }
+
   // Remove any ants that left the grid
   for (auto index : to_remove | std::views::reverse) {
     m_ants.erase(m_ants.begin() + index);
@@ -164,4 +165,21 @@ void AppState::toggle_show_iterations()
 bool AppState::show_iterations() const
 {
   return m_show_iterations;
+}
+
+void AppState::resize_grid(int height, int width)
+{
+  m_grid.resize(height, width);
+
+  // Cull any ants that have left the grid
+  std::vector<std::vector<Ants::Ant>::size_type> to_remove;
+  for (std::vector<Ants::Ant>::size_type i = 0; i < m_ants.size(); i++) {   
+    auto ant = &m_ants[i];
+    if (m_grid.is_out_of_bounds(ant->row(), ant->col())) {
+      to_remove.push_back(i);
+    }
+  }
+  for (auto index : to_remove | std::views::reverse) {
+    m_ants.erase(m_ants.begin() + index);
+  }
 }

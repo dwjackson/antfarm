@@ -11,7 +11,9 @@
 #ifndef PALETTE_HPP
 #define PALETTE_HPP
 
-#include "raylib.h"
+extern "C" {
+  #include "raylib.h"
+}
 
 class Palette {
   private:

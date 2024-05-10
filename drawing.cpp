@@ -34,6 +34,9 @@ namespace Drawing {
   Window::Window(int width, int height, const char *title) : m_screen_width(width), m_screen_height(height)
   {
     InitWindow(width, height, title);
+    int monitor = GetCurrentMonitor();
+    m_monitor_height = GetMonitorHeight(monitor);
+    m_monitor_width = GetMonitorWidth(monitor);
     SetTargetFPS(60);
   }
 
@@ -57,6 +60,16 @@ namespace Drawing {
     int x = m_screen_width / 2 - rect.width() / 2;
     int y = m_screen_height / 2 - rect.height() / 2;
     return Point(x, y);
+  }
+
+  int Window::monitor_height() const
+  {
+    return m_monitor_height;
+  }
+
+  int Window::monitor_width() const
+  {
+    return m_monitor_width;
   }
 
   Context::Context()

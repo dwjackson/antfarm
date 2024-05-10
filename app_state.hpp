@@ -54,6 +54,7 @@ class AppState {
     int iterations() const;
     void toggle_show_iterations();
     bool show_iterations() const;
+    void resize_grid(int height, int width);
 };
 
 

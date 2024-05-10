@@ -8,8 +8,10 @@
  * Copyright (c) 2024 David Jackson
  */
 
+extern "C" {
+  #include "raylib.h"
+}
 #include "palette.hpp"
-#include "raylib.h"
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("next colour index", "[palette]")

@@ -27,6 +27,7 @@ namespace Grids {
       void set_cell(int row, int col, int value);
       bool is_out_of_bounds(int row, int col) const;
       void reset();
+      void resize(int height, int width);
   }; 
 }
 

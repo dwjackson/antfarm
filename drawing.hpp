@@ -8,7 +8,9 @@
  * Copyright (c) 2024 David Jackson
  */
 
-#include "raylib.h"
+extern "C" {
+  #include "raylib.h"
+}
 #include <memory>
 
 namespace Drawing {
@@ -46,12 +48,16 @@ namespace Drawing {
     private:
       const int m_screen_width;
       const int m_screen_height;
+      int m_monitor_height;
+      int m_monitor_width;
     public:
       Window(int width, int height, const char *title);
       ~Window();
       std::unique_ptr<Context> draw();
       bool should_close();
       Point center(const Rectangle &rect);
+      int monitor_width() const;
+      int monitor_height() const;
   };
 
 }

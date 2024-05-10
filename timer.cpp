@@ -9,7 +9,9 @@
  */
 
 #include "timer.hpp"
-#include "raylib.h"
+extern "C" {
+  #include "raylib.h"
+}
 
 Timer::Timer()
 {

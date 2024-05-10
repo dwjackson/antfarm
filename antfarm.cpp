@@ -8,10 +8,13 @@
  * Copyright (c) 2024 David Jackson
  */
 
+extern "C" {
+  #include "raylib.h"
+}
+
 #include "grids.hpp"
 #include "ants.hpp"
 #include "drawing.hpp"
-#include "raylib.h"
 #include "app_state.hpp"
 #include "palette.hpp"
 #include "timer.hpp"
@@ -25,7 +28,7 @@
 const int side = 10;
 const int max_ants = 10;
 
-const int screen_width = 1500;
+const int screen_width = 1440;
 const int screen_height = 900;
 const int font_size = 20;
 
@@ -34,6 +37,7 @@ typedef void (*click_handler)(AppState &state, int x, int y);
 static void add_ant(AppState &state, int x, int y);
 static void cycle_colour(AppState &state, int x, int y);
 static void draw_scene(Drawing::Window &window, const AppState &state);
+static void toggle_fullscreen(AppState &state, Drawing::Window &window);
 
 int main(int argc, char *argv[])
 {
@@ -129,6 +133,11 @@ int main(int argc, char *argv[])
       state.toggle_show_iterations();
     }
 
+    // Toggle fullscreen if "F" is pressed
+    if (IsKeyPressed(KEY_F)) {
+      toggle_fullscreen(state, window);
+    }
+
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.tick();
@@ -176,8 +185,10 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
   }
 
   /* Draw the HUD */
-  auto hud_pos = Drawing::Point(0, screen_height - font_size);
-  auto hud_rectangle = Drawing::Rectangle(screen_width, font_size);
+  int height = GetRenderHeight();
+  int width = GetRenderWidth();
+  auto hud_pos = Drawing::Point(0, height - font_size);
+  auto hud_rectangle = Drawing::Rectangle(width, font_size);
   drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
   auto hud = state.hud();
   drawing->text(hud, hud_pos, font_size, DARKGRAY);
@@ -188,4 +199,25 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
     auto iterations = std::format("Iterations: {}", state.iterations());
     drawing->text(iterations.c_str(), iterations_pos, font_size, DARKGRAY);
   }
+}
+
+static void toggle_fullscreen(AppState &state, Drawing::Window &window)
+{
+  ToggleFullscreen();
+
+  int height, width;
+  if (IsWindowFullscreen()) {
+    width = window.monitor_width();
+    height = window.monitor_height();
+  } else {
+    height = screen_height;
+    width = screen_width;
+  }
+  SetWindowSize(width, height);
+
+  // Resize the grid
+  height /= side;
+  height -= font_size / side;
+  width /= side;
+  state.resize_grid(height, width);
 }

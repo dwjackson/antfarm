@@ -10,7 +10,9 @@
 
 #include "app_state.hpp"
 #include "palette.hpp"
-#include "raylib.h"
+extern "C" {
+  #include "raylib.h"
+}
 #include "ants.hpp"
 #include "ants.hpp"
 #include <catch2/catch_test_macros.hpp>
