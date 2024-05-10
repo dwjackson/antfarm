@@ -17,8 +17,13 @@ find_library(Raylib_LIBRARIES
     /lib
 )
 
+file(READ "${Raylib_INCLUDE_DIR}/raylib.h" header_contents)
+string(REGEX MATCH "#define RAYLIB_VERSION \"([0-9]+\.[0-9]+)\"" _ "${header_contents}")
+set(Raylib_VERSOIN ${CMAKE_MATCH_1})
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Raylib
   REQUIRED_VARS Raylib_LIBRARIES Raylib_INCLUDE_DIR
+  VERSION_VAR Raylib_VERSION
   FAIL_MESSAGE "Could not find Raylib"
 )
