@@ -8,18 +8,17 @@ cmake_minimum_required(VERSION 3.10)
 
 project(AntFarm)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp timer.cpp)
 target_compile_options(antfarm PRIVATE -Wall -Wextra)
 
-find_library(raylib raylib PATHS /usr/lib)
-if (raylib)
-	target_link_libraries(antfarm ${raylib})
-else()
-	message(FATAL_ERROR "Raylib not found")
-endif()
+find_package(Raylib 5.0 REQUIRED)
+include_directories(${Raylib_INCLUDE_DIRS})
+target_link_libraries(antfarm ${Raylib_LIBRARIES})
 
 # Tests
 
