@@ -36,9 +36,13 @@ target_link_libraries(app_state_test PRIVATE Catch2::Catch2WithMain)
 add_executable(rules_test rules_test.cpp palette.cpp rules.cpp)
 target_link_libraries(rules_test PRIVATE Catch2::Catch2WithMain)
 
+add_executable(palette_test palette_test.cpp palette.cpp)
+target_link_libraries(palette_test PRIVATE Catch2::Catch2WithMain)
+
 include(CTest)
 include(Catch)
 catch_discover_tests(grids_test)
 catch_discover_tests(ants_test)
 catch_discover_tests(app_state_test)
 catch_discover_tests(rules_test)
+catch_discover_tests(palette_test)
