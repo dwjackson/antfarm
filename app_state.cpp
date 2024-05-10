@@ -36,7 +36,7 @@ void AppState::set_click_mode(ClickMode mode)
 {
   m_click_mode = mode;
   const char *click_control = m_click_mode == ClickMode::CREATE_ANT ? CREATE_ANT_STR : INVERT_CELL_STR;
-  m_hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1] Insert Mode [2] Colour Change Mode", click_control);
+  m_hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1,2] Change Mode [T] Step Time [+,-] Speed/Slow Time [R] Reset", click_control);
 }
 
 double AppState::tick_seconds() const
