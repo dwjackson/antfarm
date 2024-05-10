@@ -25,8 +25,8 @@
 const int side = 10;
 const int max_ants = 10;
 
-const int screen_width = 1200;
-const int screen_height = 720;
+const int screen_width = 1500;
+const int screen_height = 900;
 const int font_size = 20;
 
 typedef void (*click_handler)(AppState &state, int x, int y);
