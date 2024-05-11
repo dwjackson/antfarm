@@ -65,6 +65,7 @@ The controls of AntFarm are as follows:
 * Press `1` to make each click create a new ant (this is the default)
 * Press `2` to make each click invert the colour of the clicked square
 * Press `ESC` to quit
+* Press `C` to toggle crosshairs in the center of the screen
 * Press `F` to toggle fullscreen mode
 * Press `I` to toggle iterations being show on screen
 * Press `R` to reset (i.e. remove all ants and reset all grid cells to white)

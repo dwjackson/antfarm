@@ -29,6 +29,7 @@ AppState::AppState(int height, int width, const char *rules, Palette palette) : 
   m_rules_len = strlen(rules);
   m_iterations = 0;
   m_show_iterations = false;
+  m_show_crosshairs = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -182,4 +183,14 @@ void AppState::resize_grid(int height, int width)
   for (auto index : to_remove | std::views::reverse) {
     m_ants.erase(m_ants.begin() + index);
   }
+}
+
+void AppState::toggle_crosshairs()
+{
+  m_show_crosshairs = !m_show_crosshairs;
+}
+
+bool AppState::is_crosshairs_visible() const
+{
+  return m_show_crosshairs;
 }

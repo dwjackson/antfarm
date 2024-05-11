@@ -11,37 +11,19 @@
 extern "C" {
   #include "raylib.h"
 }
+#include "geometry.hpp"
 #include <memory>
 
 namespace Drawing {
-
-  class Rectangle {
-    private:
-      const int m_width;
-      const int m_height;
-    public:
-      Rectangle(int width, int height);
-      int width() const;
-      int height() const;
-  };
-
-  class Point {
-    private:
-      const int m_x;
-      const int m_y;
-    public:
-      Point(int x, int y);
-      int x() const;
-      int y() const;
-  };
 
   class Context {
     public:
       Context();
       ~Context();
       void clear_background();
-      void rectangle(const Point &pos, const Rectangle &rect, Color colour);
-      void text(const char *text, Point &pos, int font_size, Color colour);
+      void rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Color colour);
+      void text(const char *text, Geometry::Point &pos, int font_size, Color colour);
+      void line(const Geometry::Point &start, const Geometry::Point &end, Color colour);
   };
 
   class Window {
@@ -55,7 +37,7 @@ namespace Drawing {
       ~Window();
       std::unique_ptr<Context> draw();
       bool should_close();
-      Point center(const Rectangle &rect);
+      Geometry::Point center(const Geometry::Rectangle &rect);
       int monitor_width() const;
       int monitor_height() const;
   };

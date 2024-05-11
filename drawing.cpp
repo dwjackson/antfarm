@@ -13,23 +13,10 @@ extern "C" {
 }
 
 #include "drawing.hpp"
+#include "geometry.hpp"
 #include <memory>
 
 namespace Drawing {
-
-  Point::Point(int x, int y) : m_x(x), m_y(y)
-  {
-  }
-
-  int Point::x() const
-  {
-    return m_x;
-  }
-
-  int Point::y() const
-  {
-    return m_y;
-  }
 
   Window::Window(int width, int height, const char *title) : m_screen_width(width), m_screen_height(height)
   {
@@ -55,11 +42,11 @@ namespace Drawing {
     return WindowShouldClose();
   }
 
-  Point Window::center(const Rectangle &rect)
+  Geometry::Point Window::center(const Geometry::Rectangle &rect)
   {
     int x = m_screen_width / 2 - rect.width() / 2;
     int y = m_screen_height / 2 - rect.height() / 2;
-    return Point(x, y);
+    return Geometry::Point(x, y);
   }
 
   int Window::monitor_height() const
@@ -87,27 +74,19 @@ namespace Drawing {
     ClearBackground(RAYWHITE);
   }
 
-  void Context::rectangle(const Point &pos, const Rectangle &rect, Color colour)
+  void Context::rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Color colour)
   {
     DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), colour);
   }
 
-  void Context::text(const char *text, Point &pos, int font_size, Color colour)
+  void Context::text(const char *text, Geometry::Point &pos, int font_size, Color colour)
   {
     DrawText(text, pos.x(), pos.y(), font_size, colour);
   }
 
-  Rectangle::Rectangle(int width, int height) : m_width(width), m_height(height)
+  void Context::line(const Geometry::Point &start, const Geometry::Point &end, Color colour)
   {
+    DrawLine(start.x(), start.y(), end.x(), end.y(), colour);
   }
 
-  int Rectangle::width() const
-  {
-    return m_width;
-  }
-
-  int Rectangle::height() const
-  {
-    return m_height;
-  }
 } 

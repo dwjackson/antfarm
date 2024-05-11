@@ -19,6 +19,7 @@ extern "C" {
 #include "palette.hpp"
 #include "timer.hpp"
 #include "rules.hpp"
+#include "geometry.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <format>
@@ -38,6 +39,9 @@ static void add_ant(AppState &state, int x, int y);
 static void cycle_colour(AppState &state, int x, int y);
 static void draw_scene(Drawing::Window &window, const AppState &state);
 static void toggle_fullscreen(AppState &state, Drawing::Window &window);
+
+static Geometry::Rectangle rectangle(int width, int height);
+static Geometry::Point point(int x, int y);
 
 int main(int argc, char *argv[])
 {
@@ -138,6 +142,11 @@ int main(int argc, char *argv[])
       toggle_fullscreen(state, window);
     }
 
+    // Toggle the crosshairs if "C" is pressed
+    if (IsKeyPressed(KEY_C)) {
+      state.toggle_crosshairs();
+    }
+
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.tick();
@@ -166,13 +175,13 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
 {
   auto drawing = window.draw();
   drawing->clear_background();
-  auto rect = Drawing::Rectangle(side, side);
+  auto rect = rectangle(side, side);
 
   /* Draw the grid */
   for (int i = 0; i < state.grid().height(); i++) {
     for (int j = 0; j < state.grid().width(); j++) {
       auto colour_index = state.grid().cell(i, j);
-      auto pos = Drawing::Point(j * side, i * side);
+      auto pos = point(j * side, i * side);
       auto colour = state.colour(colour_index);
       drawing->rectangle(pos, rect, colour);
     }
@@ -180,24 +189,36 @@ static void draw_scene(Drawing::Window &window, const AppState &state)
 
   /* Draw the ants */
   for (auto ant : state.ants()) {
-    auto pos = Drawing::Point(ant.col() * side, ant.row() * side);
+    auto pos = point(ant.col() * side, ant.row() * side);
     drawing->rectangle(pos, rect, RED);
   }
 
   /* Draw the HUD */
   int height = GetRenderHeight();
   int width = GetRenderWidth();
-  auto hud_pos = Drawing::Point(0, height - font_size);
-  auto hud_rectangle = Drawing::Rectangle(width, font_size);
+  auto hud_pos = point(0, height - font_size);
+  auto hud_rectangle = rectangle(width, font_size);
   drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
   auto hud = state.hud();
   drawing->text(hud, hud_pos, font_size, DARKGRAY);
 
   if (state.show_iterations())
   {
-    auto iterations_pos = Drawing::Point(0, 0);
+    auto iterations_pos = point(0, 0);
     auto iterations = std::format("Iterations: {}", state.iterations());
     drawing->text(iterations.c_str(), iterations_pos, font_size, DARKGRAY);
+  }
+
+  if (state.is_crosshairs_visible()) {
+    const int dim = 50;
+    auto dims = rectangle(dim, dim);
+    auto center = dims.center_within(GetRenderWidth(), GetRenderHeight());
+
+    // Horizontal Line
+    drawing->line(point(center.x() - dim / 2, center.y()), point(center.x() + dim / 2, center.y()), LIGHTGRAY);
+
+    // Vertical line
+    drawing->line(point(center.x(), center.y() - dim / 2), point(center.x(), center.y() + dim / 2), LIGHTGRAY);
   }
 }
 
@@ -221,3 +242,14 @@ static void toggle_fullscreen(AppState &state, Drawing::Window &window)
   width /= side;
   state.resize_grid(height, width);
 }
+
+static Geometry::Rectangle rectangle(int width, int height)
+{
+  return Geometry::Rectangle(width, height);
+}
+
+static Geometry::Point point(int x, int y)
+{
+  return Geometry::Point(x, y);
+}
+
