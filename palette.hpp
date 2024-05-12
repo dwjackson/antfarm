@@ -11,19 +11,29 @@
 #ifndef PALETTE_HPP
 #define PALETTE_HPP
 
+#include <string>
+#include <vector>
+
 extern "C" {
   #include "raylib.h"
 }
 
-class Palette {
-  private:
-    const Color *m_colours;
-    const int m_size;
-  public:
-    Palette(Color *colours, int size);
-    Color operator [](int index) const;
-    int next(int index, int limit) const;
-    int size() const;
-};
+namespace Palette {  
+
+  class Palette {
+    private:
+      const std::vector<Color> m_colours;
+    public:
+      Palette(std::vector<Color> colours);
+      Color operator [](int index) const;
+      int next(int index, int limit) const;
+      int size() const;
+  };
+
+  Color color_from_hex(unsigned int hex);
+  Color parse_color(std::string input);
+  Palette parse_palette(std::string file_name);
+  Palette default_palette(void);
+}
 
 #endif /* PALETTE_HPP */

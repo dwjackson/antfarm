@@ -88,5 +88,4 @@ namespace Drawing {
   {
     DrawLine(start.x(), start.y(), end.x(), end.y(), colour);
   }
-
 } 

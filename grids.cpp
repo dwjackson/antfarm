@@ -78,7 +78,7 @@ void Grids::Grid::resize(int height, int width)
   for (int i = 0; i < m_height; i++) {
     delete m_cells[i];
   }
-  delete m_cells;
+  delete[] m_cells;
   m_cells = nullptr;
   
   // Update the grid

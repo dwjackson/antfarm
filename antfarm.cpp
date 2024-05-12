@@ -24,6 +24,7 @@ extern "C" {
 #include <cstdlib>
 #include <format>
 #include <functional>
+#include <string>
 
 const int side = 10;
 const int max_ants = 10;
@@ -47,35 +48,30 @@ int main(int argc, char *argv[])
 {
   const int height = screen_height / side - font_size / side;
   const int width = screen_width / side;
-  
-  Color colours[] = {
-    RAYWHITE,
-    BLACK,
-    DARKPURPLE,
-    VIOLET,
-    PURPLE,
-    DARKBLUE,
-    BLUE,
-    SKYBLUE,
-    DARKGREEN,
-    LIME,
-    GREEN,
-    MAROON,
-    PINK,
-    ORANGE,
-    GOLD,
-    YELLOW
-  };
-  int colours_count = sizeof(colours) / sizeof(colours[0]);
-  Palette palette = Palette(colours, colours_count);
+
+  // Parse the colour palette
+  auto palette = argc < 3 ?
+                           Palette::default_palette()
+                           :
+                           Palette::parse_palette(std::string(argv[1]));
+  if (palette.size() == 0) {
+    fprintf(stderr, "ERROR: Empty palette\n");
+    std::abort();
+  }
 
   // Set up the rule(s)
-  const char *rules = ANT_STANDARD_RULE;
-  if (argc > 1) {
+  const char *rules;
+  if (argc == 2) {
     rules = argv[1];
+  } else if (argc > 2) {
+    rules = argv[2];
+  } else {
+    rules = ANT_STANDARD_RULE;
   }
-  if (!rules_validate(rules, palette)) {
-    fprintf(stderr, "Invalid rules\n");
+  auto validation_result = rules_validate(rules, palette);
+  if (validation_result != RulesError::NONE) {
+    std::string explanation = rules_error_explain(validation_result);
+    fprintf(stderr, "%s\n", explanation.c_str());
     std::abort();
   }
 
@@ -179,4 +175,3 @@ static void toggle_fullscreen(AppState &state, Drawing::Window &window)
   width /= side;
   state.resize_grid(height, width);
 }
-

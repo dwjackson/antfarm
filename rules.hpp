@@ -13,6 +13,13 @@
 
 #include "palette.hpp"
 
-bool rules_validate(const char *rules, const Palette &palette);
+enum class RulesError {
+  NONE,
+  TOO_MANY_RULES,
+  INVALID_CHARACTER
+ };
+
+RulesError rules_validate(const char *rules, const Palette::Palette &palette);
+std::string rules_error_explain(RulesError error);
 
 #endif /* RULES_HPP */

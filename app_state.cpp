@@ -22,7 +22,7 @@ const double tick_min = 0.05;
 const double tick_max = 1.00;
 const double tick_delta = 0.1;
 
-AppState::AppState(int height, int width, const char *rules, Palette palette) : m_grid(height, width), m_palette(palette)
+AppState::AppState(int height, int width, const char *rules, Palette::Palette palette) : m_grid(height, width), m_palette(palette)
 {
   m_tick_seconds = tick_min;
   m_rules = rules;

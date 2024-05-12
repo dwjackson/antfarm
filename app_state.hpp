@@ -31,14 +31,14 @@ class AppState {
     std::string m_hud;
     const char *m_rules;
     int m_rules_len;
-    Palette m_palette;
+    Palette::Palette m_palette;
     int m_iterations;
     bool m_show_iterations;
     bool m_show_crosshairs;
     bool m_show_grid;
     bool m_is_paused;
   public:
-    AppState(int height, int width, const char *rules, Palette palette);
+    AppState(int height, int width, const char *rules, Palette::Palette palette);
     ClickMode click_mode() const;
     void set_click_mode(ClickMode mode);
     double tick_seconds() const;

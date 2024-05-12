@@ -15,13 +15,13 @@ extern "C" {
 }
 #include "ants.hpp"
 #include "ants.hpp"
+#include <vector>
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
 {
-  Color colours[] = { RAYWHITE, BLACK, PURPLE };
-  auto colours_size = 3;
-  auto palette = Palette(colours, colours_size);
+  std::vector<Color> colours =  { RAYWHITE, BLACK, PURPLE };
+  auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "LR", palette);
 
   state.cycle_colour(0, 0); // 0 -> 1
@@ -34,9 +34,8 @@ TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
 
 TEST_CASE("cycle a cell where rules are same size as palette", "[app_state]")
 {
-  Color colours[] = { RAYWHITE, BLACK, PURPLE };
-  auto colours_size = 3;
-  auto palette = Palette(colours, colours_size);
+  std::vector<Color> colours =  { RAYWHITE, BLACK, PURPLE };
+  auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "LRL", palette);
 
   state.cycle_colour(0, 0); // 0 -> 1
@@ -48,10 +47,8 @@ TEST_CASE("cycle a cell where rules are same size as palette", "[app_state]")
 
 TEST_CASE("count iterations", "[app_state]")
 {
-  
-  Color colours[] = { RAYWHITE, BLACK };
-  auto colours_size = 2;
-  auto palette = Palette(colours, colours_size);
+  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
 
   REQUIRE(state.iterations() == 0);
@@ -63,9 +60,8 @@ TEST_CASE("count iterations", "[app_state]")
 
 TEST_CASE("tick", "[app_state]")
 {
-  Color colours[] = { RAYWHITE, BLACK };
-  auto colours_size = 2;
-  auto palette = Palette(colours, colours_size);
+  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
   state.add_ant(Ants::Ant(5, 5, Ants::Direction::NORTH));
   state.tick();
@@ -75,10 +71,8 @@ TEST_CASE("tick", "[app_state]")
 
 TEST_CASE("iteration count does not increase if there are no ants", "[app_state]")
 {
-  
-  Color colours[] = { RAYWHITE, BLACK };
-  auto colours_size = 2;
-  auto palette = Palette(colours, colours_size);
+  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
 
   REQUIRE(state.iterations() == 0);
