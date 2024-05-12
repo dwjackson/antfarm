@@ -19,9 +19,11 @@ extern "C" {
 #include "timer.hpp"
 #include "rules.hpp"
 #include "scene.hpp"
+#include "keyboard.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <format>
+#include <functional>
 
 const int side = 10;
 const int max_ants = 10;
@@ -31,6 +33,11 @@ const int screen_height = 900;
 const int font_size = 20;
 
 typedef void (*click_handler)(AppState &state, int x, int y);
+
+struct key_handler {
+  char key;
+  std::function<void(AppState&)> handler;
+};
 
 static void add_ant(AppState &state, int x, int y);
 static void cycle_colour(AppState &state, int x, int y);
@@ -78,22 +85,35 @@ int main(int argc, char *argv[])
   AppState state = AppState(height, width, rules, palette);
   Scene scene(side, font_size);
 
+  // Key Handlers
+  key_handler key_handlers[] = {
+    { '1', [](AppState &state) { state.set_click_mode(ClickMode::CREATE_ANT); } },
+    { '2', [](AppState &state) { state.set_click_mode(ClickMode::CYCLE_COLOUR); } },
+    { '+', [](AppState &state) { state.speed_up(); } },
+    { '-', [](AppState &state) { state.slow_down(); } },
+    { ' ', [](AppState &state) { state.toggle_pause(); } },
+    { 'c', [](AppState &state) { state.toggle_crosshairs(); } },
+    { 'g', [](AppState &state) { state.toggle_grid(); } },
+    { 'i', [](AppState &state) { state.toggle_show_iterations(); } },
+    { 'r', [](AppState &state) { state.reset(); } },
+    { 't', [](AppState &state) {
+      if (!state.is_paused()) {
+        state.toggle_pause();
+      }
+      state.tick();
+    } }
+  };
+  int key_handler_count = sizeof(key_handlers) / sizeof(key_handlers[0]);
+
   timer.start();
   while (!window.should_close()) {
     scene.draw(window, state);
-
-    // Change the click mode
-    if (IsKeyPressed(KEY_ONE)) {
-      state.set_click_mode(ClickMode::CREATE_ANT);
-    } else if (IsKeyPressed(KEY_TWO)) {
-      state.set_click_mode(ClickMode::INVERT_COLOUR);
-    }
 
     // Add an ant if the user clicks somewhere
     click_handler handler;
     if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < max_ants) {
       handler = add_ant;
-    } else if (state.click_mode() == ClickMode::INVERT_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    } else if (state.click_mode() == ClickMode::CYCLE_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       handler = cycle_colour;
     } else {
       handler = NULL;
@@ -102,50 +122,17 @@ int main(int argc, char *argv[])
       handler(state, GetMouseX(), GetMouseY());
     }
 
-    // Speed up or slow down time
-    bool is_plus_pressed = (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && IsKeyPressed(KEY_EQUAL);
-    if (is_plus_pressed) {
-      state.speed_up();
-    } else if (IsKeyPressed(KEY_MINUS)) {
-      state.slow_down();
-    }
-
-    // Pause if the user presses the spacebar
-    if (IsKeyPressed(KEY_SPACE)) {
-      state.toggle_pause();
-    }
-
-    // Move time forward by a single tick if "T" is pressed
-    if (IsKeyPressed(KEY_T)) {
-      if (!state.is_paused()) {
-        state.toggle_pause();
+    // Key Handlers
+    for (int i = 0; i < key_handler_count; i++) {
+      auto kh = &key_handlers[i];
+      if (Keyboard::is_key_pressed(kh->key)) {
+        kh->handler(state);
       }
-      state.tick();
-    }
-
-    // Reset the state if "R" is pressed
-    if (IsKeyPressed(KEY_R)) {
-      state.reset();
-    }
-
-    // Print iterations if "I" is pressed
-    if (IsKeyPressed(KEY_I)) {
-      state.toggle_show_iterations();
     }
 
     // Toggle fullscreen if "F" is pressed
     if (IsKeyPressed(KEY_F)) {
       toggle_fullscreen(state, window);
-    }
-
-    // Toggle the crosshairs if "C" is pressed
-    if (IsKeyPressed(KEY_C)) {
-      state.toggle_crosshairs();
-    }
-
-    // Toggle the grid if "G" prssed
-    if (IsKeyPressed(KEY_G)) {
-      state.toggle_grid();
     }
 
     double elapsed_time = timer.elapsed();

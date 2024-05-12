@@ -19,7 +19,7 @@
 
 enum class ClickMode {
   CREATE_ANT,
-  INVERT_COLOUR
+  CYCLE_COLOUR
 };
 
 class AppState {
