@@ -67,6 +67,7 @@ The controls of AntFarm are as follows:
 * Press `ESC` to quit
 * Press `C` to toggle crosshairs in the center of the screen
 * Press `F` to toggle fullscreen mode
+* Press `G` to toggle grid
 * Press `I` to toggle iterations being show on screen
 * Press `R` to reset (i.e. remove all ants and reset all grid cells to white)
 * Press `SPACE` to stop/start the progression of time

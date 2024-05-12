@@ -13,7 +13,8 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp timer.cpp palette.cpp rules.cpp geometry.cpp)
+add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp
+  timer.cpp palette.cpp rules.cpp geometry.cpp scene.cpp)
 target_compile_options(antfarm PRIVATE -Wall -Wextra)
 
 find_package(Raylib 5.0 REQUIRED)

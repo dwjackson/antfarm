@@ -12,19 +12,15 @@ extern "C" {
   #include "raylib.h"
 }
 
-#include "grids.hpp"
 #include "ants.hpp"
 #include "drawing.hpp"
 #include "app_state.hpp"
 #include "palette.hpp"
 #include "timer.hpp"
 #include "rules.hpp"
-#include "geometry.hpp"
+#include "scene.hpp"
 #include <cstdio>
 #include <cstdlib>
-#include <format>
-#include <string>
-#include <string_view>
 
 const int side = 10;
 const int max_ants = 10;
@@ -37,11 +33,7 @@ typedef void (*click_handler)(AppState &state, int x, int y);
 
 static void add_ant(AppState &state, int x, int y);
 static void cycle_colour(AppState &state, int x, int y);
-static void draw_scene(Drawing::Window &window, const AppState &state);
 static void toggle_fullscreen(AppState &state, Drawing::Window &window);
-
-static Geometry::Rectangle rectangle(int width, int height);
-static Geometry::Point point(int x, int y);
 
 int main(int argc, char *argv[])
 {
@@ -80,11 +72,12 @@ int main(int argc, char *argv[])
     std::abort();
   }
   AppState state = AppState(height, width, rules, palette);
+  Scene scene(side, font_size);
 
   bool is_paused = false;
   timer.start();
   while (!window.should_close()) {
-    draw_scene(window, state);
+    scene.draw(window, state);
 
     // Change the click mode
     if (IsKeyPressed(KEY_ONE)) {
@@ -147,6 +140,11 @@ int main(int argc, char *argv[])
       state.toggle_crosshairs();
     }
 
+    // Toggle the grid if "G" prssed
+    if (IsKeyPressed(KEY_G)) {
+      state.toggle_grid();
+    }
+
     double elapsed_time = timer.elapsed();
     if (!is_paused && elapsed_time >= state.tick_seconds()) {
       state.tick();
@@ -171,57 +169,6 @@ static void cycle_colour(AppState &state, int x, int y)
   state.cycle_colour(row, col);
 }
 
-static void draw_scene(Drawing::Window &window, const AppState &state)
-{
-  auto drawing = window.draw();
-  drawing->clear_background();
-  auto rect = rectangle(side, side);
-
-  /* Draw the grid */
-  for (int i = 0; i < state.grid().height(); i++) {
-    for (int j = 0; j < state.grid().width(); j++) {
-      auto colour_index = state.grid().cell(i, j);
-      auto pos = point(j * side, i * side);
-      auto colour = state.colour(colour_index);
-      drawing->rectangle(pos, rect, colour);
-    }
-  }
-
-  /* Draw the ants */
-  for (auto ant : state.ants()) {
-    auto pos = point(ant.col() * side, ant.row() * side);
-    drawing->rectangle(pos, rect, RED);
-  }
-
-  /* Draw the HUD */
-  int height = GetRenderHeight();
-  int width = GetRenderWidth();
-  auto hud_pos = point(0, height - font_size);
-  auto hud_rectangle = rectangle(width, font_size);
-  drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
-  auto hud = state.hud();
-  drawing->text(hud, hud_pos, font_size, DARKGRAY);
-
-  if (state.show_iterations())
-  {
-    auto iterations_pos = point(0, 0);
-    auto iterations = std::format("Iterations: {}", state.iterations());
-    drawing->text(iterations.c_str(), iterations_pos, font_size, DARKGRAY);
-  }
-
-  if (state.is_crosshairs_visible()) {
-    const int dim = 50;
-    auto dims = rectangle(dim, dim);
-    auto center = dims.center_within(GetRenderWidth(), GetRenderHeight());
-
-    // Horizontal Line
-    drawing->line(point(center.x() - dim / 2, center.y()), point(center.x() + dim / 2, center.y()), LIGHTGRAY);
-
-    // Vertical line
-    drawing->line(point(center.x(), center.y() - dim / 2), point(center.x(), center.y() + dim / 2), LIGHTGRAY);
-  }
-}
-
 static void toggle_fullscreen(AppState &state, Drawing::Window &window)
 {
   ToggleFullscreen();
@@ -241,15 +188,5 @@ static void toggle_fullscreen(AppState &state, Drawing::Window &window)
   height -= font_size / side;
   width /= side;
   state.resize_grid(height, width);
-}
-
-static Geometry::Rectangle rectangle(int width, int height)
-{
-  return Geometry::Rectangle(width, height);
-}
-
-static Geometry::Point point(int x, int y)
-{
-  return Geometry::Point(x, y);
 }
 

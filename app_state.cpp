@@ -30,6 +30,7 @@ AppState::AppState(int height, int width, const char *rules, Palette palette) : 
   m_iterations = 0;
   m_show_iterations = false;
   m_show_crosshairs = false;
+  m_show_grid = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -193,4 +194,15 @@ void AppState::toggle_crosshairs()
 bool AppState::is_crosshairs_visible() const
 {
   return m_show_crosshairs;
+}
+
+
+void AppState::toggle_grid()
+{
+  m_show_grid = !m_show_grid;
+}
+
+bool AppState::is_grid_visible() const
+{
+  return m_show_grid;
 }

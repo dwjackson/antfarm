@@ -8,6 +8,9 @@
  * Copyright (c) 2024 David Jackson
  */
 
+#ifndef DRAWING_HPP
+#define DRAWING_HPP
+
 extern "C" {
   #include "raylib.h"
 }
@@ -43,3 +46,5 @@ namespace Drawing {
   };
 
 }
+
+#endif /* DRAWING_HPP */
