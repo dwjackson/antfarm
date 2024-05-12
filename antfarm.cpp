@@ -78,7 +78,6 @@ int main(int argc, char *argv[])
   AppState state = AppState(height, width, rules, palette);
   Scene scene(side, font_size);
 
-  bool is_paused = false;
   timer.start();
   while (!window.should_close()) {
     scene.draw(window, state);
@@ -113,13 +112,13 @@ int main(int argc, char *argv[])
 
     // Pause if the user presses the spacebar
     if (IsKeyPressed(KEY_SPACE)) {
-      is_paused = !is_paused;
+      state.toggle_pause();
     }
 
     // Move time forward by a single tick if "T" is pressed
     if (IsKeyPressed(KEY_T)) {
-      if (!is_paused) {
-        is_paused = true;
+      if (!state.is_paused()) {
+        state.toggle_pause();
       }
       state.tick();
     }
@@ -150,7 +149,7 @@ int main(int argc, char *argv[])
     }
 
     double elapsed_time = timer.elapsed();
-    if (!is_paused && elapsed_time >= state.tick_seconds()) {
+    if (!state.is_paused() && elapsed_time >= state.tick_seconds()) {
       state.tick();
       timer.restart();
     }

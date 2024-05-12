@@ -31,6 +31,7 @@ AppState::AppState(int height, int width, const char *rules, Palette palette) : 
   m_show_iterations = false;
   m_show_crosshairs = false;
   m_show_grid = false;
+  m_is_paused = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -205,4 +206,14 @@ void AppState::toggle_grid()
 bool AppState::is_grid_visible() const
 {
   return m_show_grid;
+}
+
+void AppState::toggle_pause()
+{
+  m_is_paused = !m_is_paused; 
+}
+
+bool AppState::is_paused() const
+{
+  return m_is_paused;
 }
