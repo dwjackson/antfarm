@@ -21,6 +21,7 @@ extern "C" {
 #include "scene.hpp"
 #include <cstdio>
 #include <cstdlib>
+#include <format>
 
 const int side = 10;
 const int max_ants = 10;
@@ -40,9 +41,6 @@ int main(int argc, char *argv[])
   const int height = screen_height / side - font_size / side;
   const int width = screen_width / side;
   
-  auto window = Drawing::Window(screen_width, screen_height, "Ant Farm");
-  Timer timer;
-
   Color colours[] = {
     RAYWHITE,
     BLACK,
@@ -62,15 +60,21 @@ int main(int argc, char *argv[])
     YELLOW
   };
   int colours_count = sizeof(colours) / sizeof(colours[0]);
+  Palette palette = Palette(colours, colours_count);
+
+  // Set up the rule(s)
   const char *rules = ANT_STANDARD_RULE;
   if (argc > 1) {
     rules = argv[1];
   }
-  Palette palette = Palette(colours, colours_count);
   if (!rules_validate(rules, palette)) {
     fprintf(stderr, "Invalid rules\n");
     std::abort();
   }
+
+  auto title = std::format("Ant Farm ({})", rules);
+  auto window = Drawing::Window(screen_width, screen_height, title.c_str());
+  Timer timer;
   AppState state = AppState(height, width, rules, palette);
   Scene scene(side, font_size);
 
