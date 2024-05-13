@@ -19,8 +19,8 @@ AntFarm depends upon:
 
 * A C++20 compiler
 * [Raylib version 5.0](https://www.raylib.com/)
-* [CMake](https://cmake.org/) (build dependency only)
-* [Catch2](https://github.com/catchorg/Catch2) (test dependency only)
+* [CMake](https://cmake.org/) (build only)
+* [Catch2](https://github.com/catchorg/Catch2) (test only)
 
 To build it, create a `build` directory and use CMake:
 
@@ -39,13 +39,27 @@ $ make test
 
 ## Usage
 
+To run Antfarm for a basic Langton's Ant:
+
+```sh
+$ antfarm
+````
+
+To supply your own rules, using the default palette:
+
 ```sh
 $ antfarm [RULES]
 ```
 
+To supply both your own rules and your own palette:
+
+```sh
+$ sh antfarm [PALETTE_FILE_NAME] [RULES]
+````
+
 The format of `[RULES]` is a string of `L` and `R` characters--e.g. `LLRR`.
 
-To run AntFarm with the default ruleset (Langton's Ant) run the executable
+To run AntFarm with the default rule set (Langton's Ant) run the executable
 without arguments.
 
 Some interesting rules to try:
@@ -56,6 +70,25 @@ Some interesting rules to try:
 * `LRRRRRLLR`
 * `LLRRRLRLRLLR`
 * `RRLLLRLLLRRR`
+
+The palette file is a line-based configuration file. Its format, in
+[EBNF](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form)
+form is:
+
+```txt
+colour = colour name, colour hex ;
+colour hex = "0x", hex value ;
+hex value = { hex digit } ;
+hex digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "a" |
+            "b" | "c" | "d" | "e" | "f" ;
+````
+
+For example:
+
+```txt
+white 0xffffff
+black 0x000000
+````
 
 ## Controls
 
