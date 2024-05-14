@@ -20,18 +20,12 @@ extern "C" {
 #include "rules.hpp"
 #include "scene.hpp"
 #include "keyboard.hpp"
+#include "config.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <format>
 #include <functional>
 #include <string>
-
-const int side = 10;
-const int max_ants = 10;
-
-const int screen_width = 1440;
-const int screen_height = 900;
-const int font_size = 20;
 
 typedef void (*click_handler)(AppState &state, int x, int y);
 
@@ -46,8 +40,8 @@ static void toggle_fullscreen(AppState &state, Drawing::Window &window);
 
 int main(int argc, char *argv[])
 {
-  const int height = screen_height / side - font_size / side;
-  const int width = screen_width / side;
+  const int height = SCREEN_HEIGHT / SIDE - FONT_SIZE / SIDE;
+  const int width = SCREEN_WIDTH / SIDE;
 
   // Parse the colour palette
   auto palette = argc < 3 ?
@@ -76,10 +70,10 @@ int main(int argc, char *argv[])
   }
 
   auto title = std::format("Ant Farm ({})", rules);
-  auto window = Drawing::Window(screen_width, screen_height, title.c_str());
+  auto window = Drawing::Window(SCREEN_WIDTH, SCREEN_HEIGHT, title.c_str());
   Timer timer;
   AppState state = AppState(height, width, rules, palette);
-  Scene scene(side, font_size);
+  Scene scene(SIDE, FONT_SIZE);
 
   // Key Handlers
   key_handler key_handlers[] = {
@@ -91,6 +85,7 @@ int main(int argc, char *argv[])
     { 'c', [](AppState &state) { state.toggle_crosshairs(); } },
     { 'g', [](AppState &state) { state.toggle_grid(); } },
     { 'i', [](AppState &state) { state.toggle_show_iterations(); } },
+    { 'm', [](AppState &state) { state.toggle_frame_rate_visible(); }},
     { 'r', [](AppState &state) { state.reset(); } },
     { 't', [](AppState &state) {
       if (!state.is_paused()) {
@@ -107,7 +102,7 @@ int main(int argc, char *argv[])
 
     // Add an ant if the user clicks somewhere
     click_handler handler;
-    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < max_ants) {
+    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < MAX_ANTS) {
       handler = add_ant;
     } else if (state.click_mode() == ClickMode::CYCLE_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       handler = cycle_colour;
@@ -143,15 +138,15 @@ int main(int argc, char *argv[])
 
 static void add_ant(AppState &state, int x, int y)
 {
-  int row = y / side;
-  int col = x / side;
+  int row = y / SIDE;
+  int col = x / SIDE;
   state.add_ant(Ants::Ant(row, col, Ants::Direction::NORTH));
 }
 
 static void cycle_colour(AppState &state, int x, int y)
 {
-  int row = y / side;
-  int col = x / side;
+  int row = y / SIDE;
+  int col = x / SIDE;
   state.cycle_colour(row, col);
 }
 
@@ -164,14 +159,14 @@ static void toggle_fullscreen(AppState &state, Drawing::Window &window)
     width = window.monitor_width();
     height = window.monitor_height();
   } else {
-    height = screen_height;
-    width = screen_width;
+    height = SCREEN_HEIGHT;
+    width = SCREEN_WIDTH;
   }
   SetWindowSize(width, height);
 
   // Resize the grid
-  height /= side;
-  height -= font_size / side;
-  width /= side;
+  height /= SIDE;
+  height -= FONT_SIZE / SIDE;
+  width /= SIDE;
   state.resize_grid(height, width);
 }

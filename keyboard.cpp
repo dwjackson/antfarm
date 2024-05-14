@@ -75,6 +75,8 @@ static int get_raylib_key(char key)
       return KEY_G;
     case 'i':
       return KEY_I;
+    case 'm':
+      return KEY_M;
     case 'r':
       return KEY_R;
     case 't':

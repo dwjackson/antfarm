@@ -89,6 +89,17 @@ void Scene::draw(Drawing::Window &window, const AppState &state)
     drawing->rectangle(iterations_pos, rect, RAYWHITE);
     drawing->text(str, iterations_pos, m_font_size, DARKGRAY);
   }
+
+  // Draw the frame rate
+  if (state.is_frame_rate_visible()) {
+    auto fps = std::format("FPS: {}", GetFPS());
+    const char *str = fps.c_str();
+    int fps_width = MeasureText(str, m_font_size);
+    auto fps_pos = point(GetRenderWidth() - fps_width, 0);
+    auto rect = rectangle(width, m_font_size);
+    drawing->rectangle(fps_pos, rect, RAYWHITE);
+    drawing->text(str, fps_pos, m_font_size, DARKGRAY);
+  }
 }
 
 static Geometry::Rectangle rectangle(int width, int height)

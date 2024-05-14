@@ -37,6 +37,7 @@ class AppState {
     bool m_show_crosshairs;
     bool m_show_grid;
     bool m_is_paused;
+    bool m_show_frame_rate;
   public:
     AppState(int height, int width, const char *rules, Palette::Palette palette);
     ClickMode click_mode() const;
@@ -64,6 +65,8 @@ class AppState {
     bool is_grid_visible() const;
     void toggle_pause();
     bool is_paused() const;
+    void toggle_frame_rate_visible();
+    bool is_frame_rate_visible() const;
 };
 
 #endif /* APP_STATE_HPP */

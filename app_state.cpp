@@ -32,6 +32,7 @@ AppState::AppState(int height, int width, const char *rules, Palette::Palette pa
   m_show_crosshairs = false;
   m_show_grid = false;
   m_is_paused = false;
+  m_show_frame_rate = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -216,4 +217,14 @@ void AppState::toggle_pause()
 bool AppState::is_paused() const
 {
   return m_is_paused;
+}
+
+void AppState::toggle_frame_rate_visible()
+{
+  m_show_frame_rate = !m_show_frame_rate;
+}
+
+bool AppState::is_frame_rate_visible() const
+{
+  return m_show_frame_rate;
 }
