@@ -34,6 +34,7 @@ namespace Ants {
       int row() const;
       int col() const;
       Ant next(const Grids::Grid &grid, const char *rules) const;
+      void move(int row, int col);
   };
 
 }

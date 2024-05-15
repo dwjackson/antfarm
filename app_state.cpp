@@ -173,7 +173,17 @@ bool AppState::show_iterations() const
 
 void AppState::resize_grid(int height, int width)
 {
+  auto height_prev = m_grid.height();
+  auto width_prev = m_grid.width();
+  
   m_grid.resize(height, width);
+
+  // Move the ants so that they move with the drawings
+  auto resizer = Grids::Resizer(height_prev, width_prev, height, width);
+  for (auto &ant : m_ants) {
+    auto dest = resizer.move(ant.row(), ant.col());
+    ant.move(dest.y(), dest.x());
+  }
 
   // Cull any ants that have left the grid
   std::vector<std::vector<Ants::Ant>::size_type> to_remove;

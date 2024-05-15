@@ -26,3 +26,34 @@ TEST_CASE("out of bounds", "[grid]")
   auto grid = Grid(2, 2);
   REQUIRE(grid.is_out_of_bounds(3, 3) == true);
 }
+
+TEST_CASE("resize grid from smaller to larger centers the drawings", "[grid]")
+{
+  auto grid = Grid(2, 2);
+
+  // Set up the "picture"
+  grid.set_cell(0, 1, 1);
+  grid.set_cell(1, 0, 1);
+
+  grid.resize(6, 8);
+
+  // Ensure that the picture is still "centered"
+  REQUIRE(grid.cell(2, 4) == 1);
+  REQUIRE(grid.cell(3, 3) == 1);
+}
+
+TEST_CASE("resize grid from larger to smaller centers the drawings", "[grid]")
+{
+  auto grid = Grid(6, 8);
+
+  // Set up the "picture"
+  grid.set_cell(2, 4, 1);
+  grid.set_cell(3, 3, 1);
+  grid.set_cell(1, 0, 1);
+
+  grid.resize(2, 2);
+
+  // Ensure that the picture is still "centered"
+  REQUIRE(grid.cell(0, 1) == 1);
+  REQUIRE(grid.cell(1, 0) == 1);
+}

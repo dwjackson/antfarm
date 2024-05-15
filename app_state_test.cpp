@@ -79,3 +79,31 @@ TEST_CASE("iteration count does not increase if there are no ants", "[app_state]
   state.tick();
   REQUIRE(state.iterations() == 0);
 }
+
+TEST_CASE("resizing the grid to be larger moves the ants", "[app_state]")
+{
+  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  auto palette = Palette::Palette(colours);
+  auto state = AppState(2, 2, "RL", palette);
+  state.add_ant(Ants::Ant(1, 1, Ants::Direction::NORTH));
+
+  state.resize_grid(6, 8);
+
+  const Ants::Ant *ant = &state.ants()[0];
+  REQUIRE(ant->row() == 3);
+  REQUIRE(ant->col() == 4);
+}
+
+TEST_CASE("resizing the grid to be smaller moves the ants", "[app_state]")
+{
+  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  auto palette = Palette::Palette(colours);
+  auto state = AppState(6, 8, "RL", palette);
+  state.add_ant(Ants::Ant(3, 4, Ants::Direction::NORTH));
+
+  state.resize_grid(2, 2);
+
+  const Ants::Ant *ant = &state.ants()[0];
+  REQUIRE(ant->row() == 1);
+  REQUIRE(ant->col() == 1);
+}

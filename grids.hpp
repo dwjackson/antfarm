@@ -11,6 +11,8 @@
 #ifndef GRIDS_HPP
 #define GRIDS_HPP
 
+#include "geometry.hpp"
+
 namespace Grids {
   
   class Grid {
@@ -29,6 +31,22 @@ namespace Grids {
       void reset();
       void resize(int height, int width);
   }; 
+
+  class Resizer {
+    private:
+      int m_dest_row_offset;
+      int m_src_row_offset;
+      int m_dest_col_offset;
+      int m_src_col_offset;
+      bool m_is_offset_negative;
+    public:
+      Resizer(const Resizer&) = delete;
+      Resizer& operator=(const Resizer&) = delete;
+      Resizer(int height_prev, int width_prev, int height, int width);
+      Geometry::Point src(int row, int col) const;
+      Geometry::Point dest(int row, int col) const;
+      Geometry::Point move(int row, int col) const;
+  };
 }
 
 #endif /* GRIDS_HPP */

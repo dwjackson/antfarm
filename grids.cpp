@@ -9,6 +9,7 @@
  */
 
 #include "grids.hpp"
+#include "geometry.hpp"
 
 static int **create_cells(int height, int width);
 
@@ -65,11 +66,14 @@ void Grids::Grid::resize(int height, int width)
 {
   auto cells = create_cells(height, width);
 
-  // Where possible, copy the old grid onto the new one
+  // Where possible, copy the old grid onto the new one, centered
+  auto resizer = Resizer(m_height, m_width, height, width);
   for (int i = 0; i < m_height; i++) {
     for (int j = 0; j < m_width; j++) {
       if (i >= 0 && i < height && j >= 0 && j < width) {
-        cells[i][j] = m_cells[i][j];
+        auto dest = resizer.dest(i, j);
+        auto src = resizer.src(i, j);
+        cells[dest.y()][dest.x()] = m_cells[src.y()][src.x()];
       }
     }
   }
@@ -97,4 +101,44 @@ static int **create_cells(int height, int width)
     }
   }
   return cells;
+}
+
+Grids::Resizer::Resizer(int height_prev, int width_prev, int height, int width)
+{
+  m_dest_row_offset = (height - height_prev) / 2;
+  m_src_row_offset = 0;
+  m_is_offset_negative = false;
+  if (m_dest_row_offset < 0) {
+    m_src_row_offset = m_dest_row_offset * -1;
+    m_dest_row_offset = 0;
+    m_is_offset_negative = true;
+  }
+  m_dest_col_offset = (width - width_prev) / 2;
+  m_src_col_offset = 0;
+  if (m_dest_col_offset < 0) {
+    m_src_col_offset = m_dest_col_offset * -1;
+    m_dest_col_offset = 0;
+    m_is_offset_negative = true;
+  }
+}
+
+Geometry::Point Grids::Resizer::src(int row, int col) const
+{
+  return Geometry::Point(m_src_col_offset + col, m_src_row_offset + row);  
+}
+
+Geometry::Point Grids::Resizer::dest(int row, int col) const
+{
+  return Geometry::Point(m_dest_col_offset + col, m_dest_row_offset + row);  
+}
+
+Geometry::Point Grids::Resizer::move(int row, int col) const
+{
+  auto col_offset = m_dest_col_offset;
+  auto row_offset = m_dest_row_offset;
+  if (m_is_offset_negative) {
+    col_offset = m_src_col_offset * -1;
+    row_offset = m_src_row_offset * -1;
+  }
+  return Geometry::Point(col + col_offset, row + row_offset);
 }
