@@ -8,18 +8,20 @@ cmake_minimum_required(VERSION 3.10)
 
 project(AntFarm)
 
+set(exe_name "antfarm")
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(antfarm antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp
+add_executable(${exe_name} antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp
   timer.cpp palette.cpp rules.cpp geometry.cpp scene.cpp keyboard.cpp)
-target_compile_options(antfarm PRIVATE -Wall -Wextra)
+target_compile_options(${exe_name} PRIVATE -Wall -Wextra)
 
 find_package(Raylib 5.0 REQUIRED)
 include_directories(${Raylib_INCLUDE_DIRS})
-target_link_libraries(antfarm ${Raylib_LIBRARIES})
+target_link_libraries(${exe_name} ${Raylib_LIBRARIES})
 
 # Tests
 
