@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
                            Palette::parse_palette(std::string(argv[1]));
   if (palette.size() == 0) {
     fprintf(stderr, "ERROR: Empty palette\n");
-    std::abort();
+    return EXIT_FAILURE;
   }
 
   // Set up the rule(s)
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   if (validation_result != RulesError::NONE) {
     std::string explanation = rules_error_explain(validation_result);
     fprintf(stderr, "%s\n", explanation.c_str());
-    std::abort();
+    return EXIT_FAILURE;
   }
 
   auto title = std::format("Ant Farm ({})", rules);
