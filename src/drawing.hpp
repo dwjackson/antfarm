@@ -11,10 +11,8 @@
 #ifndef DRAWING_HPP
 #define DRAWING_HPP
 
-extern "C" {
-  #include "raylib.h"
-}
 #include "geometry.hpp"
+#include "palette.hpp"
 #include <memory>
 
 namespace Drawing {
@@ -24,9 +22,9 @@ namespace Drawing {
       Context();
       ~Context();
       void clear_background();
-      void rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Color colour);
-      void text(const char *text, Geometry::Point &pos, int font_size, Color colour);
-      void line(const Geometry::Point &start, const Geometry::Point &end, Color colour);
+      void rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Palette::Colour colour);
+      void text(const char *text, Geometry::Point &pos, int font_size, Palette::Colour colour);
+      void line(const Geometry::Point &start, const Geometry::Point &end, Palette::Colour colour);
   };
 
   class Window {
@@ -43,6 +41,13 @@ namespace Drawing {
       Geometry::Point center(const Geometry::Rectangle &rect);
       int monitor_width() const;
       int monitor_height() const;
+      int screen_width() const;
+      int screen_height() const;
+      int measure_text(const char *text, int font_size) const;
+      int fps() const;
+      bool is_full_screen() const;
+      void toggle_full_screen();
+      void set_size(int width, int height);
   };
 
 }

@@ -16,6 +16,8 @@ extern "C" {
 #include "geometry.hpp"
 #include <memory>
 
+static Color color(const Palette::Colour *colour);
+
 namespace Drawing {
 
   Window::Window(int width, int height, const char *title) : m_screen_width(width), m_screen_height(height)
@@ -59,6 +61,41 @@ namespace Drawing {
     return m_monitor_width;
   }
 
+  int Window::screen_width() const
+  {
+    return GetRenderWidth();
+  }
+
+  int Window::screen_height() const
+  {
+    return GetRenderHeight();
+  }
+
+  int Window::measure_text(const char *text, int font_size) const
+  {
+    return MeasureText(text, font_size);
+  }
+
+  int Window::fps() const
+  {
+    return GetFPS();
+  }
+
+  bool Window::is_full_screen() const
+  {
+    return IsWindowFullscreen();
+  }
+
+  void Window::toggle_full_screen()
+  {
+    ToggleFullscreen();
+  }
+
+  void Window::set_size(int width, int height)
+  {
+    SetWindowSize(width, height);
+  }
+
   Context::Context()
   {
     BeginDrawing();
@@ -74,18 +111,23 @@ namespace Drawing {
     ClearBackground(RAYWHITE);
   }
 
-  void Context::rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Color colour)
+  void Context::rectangle(const Geometry::Point &pos, const Geometry::Rectangle &rect, Palette::Colour colour)
   {
-    DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), colour);
+    DrawRectangle(pos.x(), pos.y(), rect.width(), rect.height(), color(&colour));
   }
 
-  void Context::text(const char *text, Geometry::Point &pos, int font_size, Color colour)
+  void Context::text(const char *text, Geometry::Point &pos, int font_size, Palette::Colour colour)
   {
-    DrawText(text, pos.x(), pos.y(), font_size, colour);
+    DrawText(text, pos.x(), pos.y(), font_size, color(&colour));
   }
 
-  void Context::line(const Geometry::Point &start, const Geometry::Point &end, Color colour)
+  void Context::line(const Geometry::Point &start, const Geometry::Point &end, Palette::Colour colour)
   {
-    DrawLine(start.x(), start.y(), end.x(), end.y(), colour);
+    DrawLine(start.x(), start.y(), end.x(), end.y(), color(&colour));
   }
 } 
+
+static Color color(const Palette::Colour *colour)
+{
+  return { colour->m_red, colour->m_green, colour->m_blue, 255 };  
+}

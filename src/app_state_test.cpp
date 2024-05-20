@@ -10,17 +10,18 @@
 
 #include "app_state.hpp"
 #include "palette.hpp"
-extern "C" {
-  #include "raylib.h"
-}
 #include "ants.hpp"
 #include "ants.hpp"
 #include <vector>
 #include <catch2/catch_test_macros.hpp>
 
+#define WHITE Palette::Colour(255, 255, 255)
+#define BLACK Palette::Colour(0, 0, 0)
+#define PURPLE Palette::Colour(255, 0, 255)
+
 TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK, PURPLE };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK, PURPLE };
   auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "LR", palette);
 
@@ -34,7 +35,7 @@ TEST_CASE("cycle a cell where rules are smaller than palette", "[app_state]")
 
 TEST_CASE("cycle a cell where rules are same size as palette", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK, PURPLE };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK, PURPLE };
   auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "LRL", palette);
 
@@ -47,7 +48,7 @@ TEST_CASE("cycle a cell where rules are same size as palette", "[app_state]")
 
 TEST_CASE("count iterations", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
 
@@ -60,7 +61,7 @@ TEST_CASE("count iterations", "[app_state]")
 
 TEST_CASE("tick", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
   state.add_ant(Ants::Ant(5, 5, Ants::Direction::NORTH));
@@ -71,7 +72,7 @@ TEST_CASE("tick", "[app_state]")
 
 TEST_CASE("iteration count does not increase if there are no ants", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
   auto state = AppState(100, 50, "RL", palette);
 
@@ -82,7 +83,7 @@ TEST_CASE("iteration count does not increase if there are no ants", "[app_state]
 
 TEST_CASE("resizing the grid to be larger moves the ants", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
   auto state = AppState(2, 2, "RL", palette);
   state.add_ant(Ants::Ant(1, 1, Ants::Direction::NORTH));
@@ -96,7 +97,7 @@ TEST_CASE("resizing the grid to be larger moves the ants", "[app_state]")
 
 TEST_CASE("resizing the grid to be smaller moves the ants", "[app_state]")
 {
-  std::vector<Color> colours =  { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours =  { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
   auto state = AppState(6, 8, "RL", palette);
   state.add_ant(Ants::Ant(3, 4, Ants::Direction::NORTH));

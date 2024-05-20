@@ -14,26 +14,34 @@
 #include <string>
 #include <vector>
 
-extern "C" {
-  #include "raylib.h"
-}
+typedef unsigned char byte;
 
 namespace Palette {  
 
+  class Colour {
+    public:
+      const byte m_red;
+      const byte m_green;
+      const byte m_blue;
+
+      Colour(byte r, byte g, byte b) : m_red(r), m_green(g), m_blue(b)
+      {
+      }
+  };
+
   class Palette {
     private:
-      const std::vector<Color> m_colours;
+      const std::vector<Colour> m_colours;
     public:
-      Palette(std::vector<Color> colours);
-      Color operator [](int index) const;
+      Palette(std::vector<Colour> colours);
+      Colour operator [](int index) const;
       int next(int index, int limit) const;
       int size() const;
   };
 
-  Color color_from_hex(unsigned int hex);
-  Color parse_color(std::string input);
+  Colour color_from_hex(unsigned int hex);
+  Colour parse_color(std::string input);
   Palette parse_palette(std::string file_name);
-  Palette default_palette(void);
 }
 
 #endif /* PALETTE_HPP */

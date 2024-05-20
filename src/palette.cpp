@@ -16,11 +16,11 @@
 
 namespace Palette
 {
-  Palette::Palette(std::vector<Color> colours) : m_colours(colours)
+  Palette::Palette(std::vector<Colour> colours) : m_colours(colours)
   {
   }
 
-  Color Palette::operator[](int index) const
+  Colour Palette::operator[](int index) const
   {
     return m_colours[index];
   }
@@ -38,16 +38,16 @@ namespace Palette
     return m_colours.size();
   } 
 
-  Color color_from_hex(unsigned int hex)
+  Colour color_from_hex(unsigned int hex)
   {
     unsigned int red = (0x00FF0000 & hex) >> 16;
     unsigned int green = (0x0000FF00 & hex) >> 8;
     unsigned int blue = 0x000000FF & hex;
 
-    return { (unsigned char) red, (unsigned char) green, (unsigned char) blue, 255 };
+    return Colour(red, green, blue);
   }
 
-  Color parse_color(std::string input)
+  Colour parse_color(std::string input)
   {
     std::stringstream ss(input);
     std::string color_name;
@@ -64,7 +64,7 @@ namespace Palette
   {
     std::string line;
     std::fstream file(file_name);
-    std::vector<Color> colours;
+    std::vector<Colour> colours;
 
     if (file.is_open()) {
       while (std::getline(file, line)) {
@@ -73,29 +73,6 @@ namespace Palette
       }
       file.close();
     }
-    return Palette(colours);
-  }
-
-  Palette default_palette(void)
-  {
-    std::vector<Color> colours = {
-      RAYWHITE,
-      BLACK,
-      DARKPURPLE,
-      VIOLET,
-      PURPLE,
-      DARKBLUE,
-      BLUE,
-      SKYBLUE,
-      DARKGREEN,
-      LIME,
-      GREEN,
-      MAROON,
-      PINK,
-      ORANGE,
-      GOLD,
-      YELLOW
-    };
     return Palette(colours);
   }
 }

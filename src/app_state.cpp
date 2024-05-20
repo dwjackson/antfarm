@@ -145,7 +145,7 @@ void AppState::reset()
   m_iterations = 0;
 }
 
-Color AppState::colour(int index) const
+Palette::Colour AppState::colour(int index) const
 {
   return m_palette[index];
 }

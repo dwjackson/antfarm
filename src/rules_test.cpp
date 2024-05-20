@@ -13,9 +13,13 @@
 #include <vector>
 #include <catch2/catch_test_macros.hpp>
 
+#define WHITE Palette::Colour(255, 255, 255)
+#define BLACK Palette::Colour(0, 0, 0)
+#define PURPLE Palette::Colour(255, 0, 255)
+
 TEST_CASE("too many rules for the number of colours", "[rules]")
 {
-  std::vector<Color> colours = { RAYWHITE, BLACK, PURPLE };
+  std::vector<Palette::Colour> colours = { WHITE, BLACK, PURPLE };
   auto palette = Palette::Palette(colours);
 
   auto result = rules_validate("LLRR", palette);
@@ -26,7 +30,7 @@ TEST_CASE("too many rules for the number of colours", "[rules]")
 
 TEST_CASE("only L and R are allowed characters", "[rules]")
 {
-  std::vector<Color> colours = { RAYWHITE, BLACK, PURPLE };
+  std::vector<Palette::Colour> colours = { WHITE, BLACK, PURPLE };
   auto palette = Palette::Palette(colours);
 
   auto result = rules_validate("LX9", palette);
@@ -37,7 +41,7 @@ TEST_CASE("only L and R are allowed characters", "[rules]")
 
 TEST_CASE("valid rules", "[rules]")
 {
-  std::vector<Color> colours = { RAYWHITE, BLACK };
+  std::vector<Palette::Colour> colours = { WHITE, BLACK };
   auto palette = Palette::Palette(colours);
 
   REQUIRE(rules_validate("RL", palette) == RulesError::NONE);
@@ -45,7 +49,7 @@ TEST_CASE("valid rules", "[rules]")
 
 TEST_CASE("valid rules with extra colours", "[rules]")
 {
-  std::vector<Color> colours = { RAYWHITE, BLACK, PURPLE };
+  std::vector<Palette::Colour> colours = { WHITE, BLACK, PURPLE };
   auto palette = Palette::Palette(colours);
 
   REQUIRE(rules_validate("RL", palette) == RulesError::NONE);

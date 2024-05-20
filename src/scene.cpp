@@ -8,14 +8,16 @@
  * Copyright (c) 2024 David Jackson
  */
 
-extern "C" {
-  #include "raylib.h"
-}
 #include "scene.hpp"
 #include "drawing.hpp"
 #include "grids.hpp"
 #include "app_state.hpp"
 #include <format>
+
+#define COLOUR_WHITE Palette::Colour(245, 245, 245)
+#define COLOUR_RED Palette::Colour(255, 0, 0)
+#define COLOUR_HUD Palette::Colour(200, 200, 200)
+#define COLOUR_TEXT Palette::Colour(80, 80, 80)
 
 static Geometry::Rectangle rectangle(int width, int height);
 static Geometry::Point point(int x, int y);
@@ -43,7 +45,7 @@ void Scene::draw(Drawing::Window &window, const AppState &state)
   /* Draw the ants */
   for (auto ant : state.ants()) {
     auto pos = point(ant.col() * m_side, ant.row() * m_side);
-    drawing->rectangle(pos, rect, RED);
+    drawing->rectangle(pos, rect, COLOUR_RED);
   }
 
   if (state.is_all_hidden()) {
@@ -52,34 +54,34 @@ void Scene::draw(Drawing::Window &window, const AppState &state)
   }
 
   /* Draw the HUD */
-  int height = GetRenderHeight();
-  int width = GetRenderWidth();
+  int height = window.screen_height();
+  int width = window.screen_width();
   auto hud_pos = point(0, height - m_font_size);
   auto hud_rectangle = rectangle(width, m_font_size);
-  drawing->rectangle(hud_pos, hud_rectangle, LIGHTGRAY);
+  drawing->rectangle(hud_pos, hud_rectangle, COLOUR_HUD);
   auto hud = state.hud();
-  drawing->text(hud, hud_pos, m_font_size, DARKGRAY);
+  drawing->text(hud, hud_pos, m_font_size, COLOUR_TEXT);
 
   // Draw the crosshairs
   if (state.is_crosshairs_visible()) {
     const int dim = 50;
     auto dims = rectangle(dim, dim);
-    auto center = dims.center_within(GetRenderWidth(), GetRenderHeight());
+    auto center = dims.center_within(window.screen_width(), window.screen_height());
 
     // Horizontal Line
-    drawing->line(point(center.x() - dim / 2, center.y()), point(center.x() + dim / 2, center.y()), LIGHTGRAY);
+    drawing->line(point(center.x() - dim / 2, center.y()), point(center.x() + dim / 2, center.y()), COLOUR_HUD);
 
     // Vertical line
-    drawing->line(point(center.x(), center.y() - dim / 2), point(center.x(), center.y() + dim / 2), LIGHTGRAY);
+    drawing->line(point(center.x(), center.y() - dim / 2), point(center.x(), center.y() + dim / 2), COLOUR_HUD);
   }
 
   // Draw the grid overlay
   if (state.is_grid_visible()) {
     for (int i = m_side; i < hud_pos.y(); i += m_side) {
-      drawing->line(point(0, i), point(width - 1, i), LIGHTGRAY);
+      drawing->line(point(0, i), point(width - 1, i), COLOUR_HUD);
     }
     for (int i = m_side; i < width; i += m_side) {
-      drawing->line(point(i, 0), point(i, hud_pos.y()), LIGHTGRAY);
+      drawing->line(point(i, 0), point(i, hud_pos.y()), COLOUR_HUD);
     }
   }
 
@@ -89,21 +91,21 @@ void Scene::draw(Drawing::Window &window, const AppState &state)
     auto iterations_pos = point(0, 0);
     auto iterations = std::format("Iterations: {}", state.iterations());
     const char *str = iterations.c_str();
-    int width = MeasureText(str, m_font_size);
+    int width = window.measure_text(str, m_font_size);
     auto rect = rectangle(width, m_font_size);
-    drawing->rectangle(iterations_pos, rect, RAYWHITE);
-    drawing->text(str, iterations_pos, m_font_size, DARKGRAY);
+    drawing->rectangle(iterations_pos, rect, COLOUR_WHITE);
+    drawing->text(str, iterations_pos, m_font_size, COLOUR_TEXT);
   }
 
   // Draw the frame rate
   if (state.is_frame_rate_visible()) {
-    auto fps = std::format("FPS: {}", GetFPS());
+    auto fps = std::format("FPS: {}", window.fps());
     const char *str = fps.c_str();
-    int fps_width = MeasureText(str, m_font_size);
-    auto fps_pos = point(GetRenderWidth() - fps_width, 0);
+    int fps_width = window.measure_text(str, m_font_size);
+    auto fps_pos = point(window.screen_width() - fps_width, 0);
     auto rect = rectangle(width, m_font_size);
-    drawing->rectangle(fps_pos, rect, RAYWHITE);
-    drawing->text(str, fps_pos, m_font_size, DARKGRAY);
+    drawing->rectangle(fps_pos, rect, COLOUR_WHITE);
+    drawing->text(str, fps_pos, m_font_size, COLOUR_TEXT);
   }
 }
 

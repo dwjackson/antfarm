@@ -8,27 +8,29 @@
  * Copyright (c) 2024 David Jackson
  */
 
-extern "C" {
-  #include "raylib.h"
-}
 #include "palette.hpp"
 #include <vector>
 #include <catch2/catch_test_macros.hpp>
 
+#define BLACK Palette::Colour(0, 0, 0)
+#define WHITE Palette::Colour(255, 255, 255)
+#define DARKPURPLE Palette::Colour(112, 31, 126)
+#define PURPLE Palette::Colour(200, 122, 255)
+#define VIOLET Palette::Colour(135, 60, 190)
+
 TEST_CASE("Color from hex code", "[drawing]")
 {
   int hex = 0x5d2e8c;
-  Color color = Palette::color_from_hex(hex);
+  Palette::Colour color = Palette::color_from_hex(hex);
 
-  REQUIRE(color.r == 93);
-  REQUIRE(color.g == 46);
-  REQUIRE(color.b == 140);
-  REQUIRE(color.a == 255);
+  REQUIRE(color.m_red == 93);
+  REQUIRE(color.m_green == 46);
+  REQUIRE(color.m_blue == 140);
 }
 
 TEST_CASE("next colour index", "[palette]")
 {
-  std::vector<Color> colours = { BLACK, WHITE, DARKPURPLE, PURPLE, VIOLET };
+  std::vector<Palette::Colour> colours = { BLACK, WHITE, DARKPURPLE, PURPLE, VIOLET };
 
   auto palette = Palette::Palette(colours);
 
@@ -43,8 +45,7 @@ TEST_CASE("next colour index", "[palette]")
 TEST_CASE("parse a color", "[palette]")
 {
   auto color = Palette::parse_color("purple 0x5d2e8c");
-  REQUIRE(color.r == 93);
-  REQUIRE(color.g == 46);
-  REQUIRE(color.b == 140);
-  REQUIRE(color.a == 255);
+  REQUIRE(color.m_red == 93);
+  REQUIRE(color.m_green == 46);
+  REQUIRE(color.m_blue == 140);
 }

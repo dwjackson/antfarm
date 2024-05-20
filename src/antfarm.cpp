@@ -8,10 +8,6 @@
  * Copyright (c) 2024 David Jackson
  */
 
-extern "C" {
-  #include "raylib.h"
-}
-
 #include "ants.hpp"
 #include "drawing.hpp"
 #include "app_state.hpp"
@@ -21,6 +17,7 @@ extern "C" {
 #include "scene.hpp"
 #include "keyboard.hpp"
 #include "config.hpp"
+#include "mouse.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <format>
@@ -37,6 +34,8 @@ struct key_handler {
 static void add_ant(AppState &state, int x, int y);
 static void cycle_colour(AppState &state, int x, int y);
 static void toggle_fullscreen(AppState &state, Drawing::Window &window);
+static Palette::Palette default_palette(void);
+static Palette::Colour rgb(byte r, byte g, byte b);
 
 int main(int argc, char *argv[])
 {
@@ -45,7 +44,7 @@ int main(int argc, char *argv[])
 
   // Parse the colour palette
   auto palette = argc < 3 ?
-                           Palette::default_palette()
+                           default_palette()
                            :
                            Palette::parse_palette(std::string(argv[1]));
   if (palette.size() == 0) {
@@ -103,15 +102,15 @@ int main(int argc, char *argv[])
 
     // Add an ant if the user clicks somewhere
     click_handler handler;
-    if (state.click_mode() == ClickMode::CREATE_ANT && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && state.ants_count() < MAX_ANTS) {
+    if (state.click_mode() == ClickMode::CREATE_ANT && Mouse::is_left_button_pressed() && state.ants_count() < MAX_ANTS) {
       handler = add_ant;
-    } else if (state.click_mode() == ClickMode::CYCLE_COLOUR && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    } else if (state.click_mode() == ClickMode::CYCLE_COLOUR && Mouse::is_left_button_pressed()) {
       handler = cycle_colour;
     } else {
       handler = NULL;
     }
     if (handler) {
-      handler(state, GetMouseX(), GetMouseY());
+      handler(state, Mouse::get_x(), Mouse::get_y());
     }
 
     // Key Handlers
@@ -123,7 +122,7 @@ int main(int argc, char *argv[])
     }
 
     // Toggle fullscreen if "F" is pressed
-    if (IsKeyPressed(KEY_F)) {
+    if (Keyboard::is_key_pressed('f')) {
       toggle_fullscreen(state, window);
     }
 
@@ -153,21 +152,49 @@ static void cycle_colour(AppState &state, int x, int y)
 
 static void toggle_fullscreen(AppState &state, Drawing::Window &window)
 {
-  ToggleFullscreen();
+  window.toggle_full_screen();
 
   int height, width;
-  if (IsWindowFullscreen()) {
+  if (window.is_full_screen()) {
     width = window.monitor_width();
     height = window.monitor_height();
   } else {
     height = SCREEN_HEIGHT;
     width = SCREEN_WIDTH;
   }
-  SetWindowSize(width, height);
+  window.set_size(width, height);
 
   // Resize the grid
   height /= SIDE;
   height -= FONT_SIZE / SIDE;
   width /= SIDE;
   state.resize_grid(height, width);
+}
+
+static Palette::Palette default_palette(void)
+{
+  std::vector<Palette::Colour> colours = {
+    rgb(245, 245, 245),
+    rgb(0, 0, 0),
+    rgb(112, 31, 126),
+    rgb(135, 60, 190),
+    rgb(200, 122, 255),
+    rgb(0, 82, 172),
+    rgb(0, 121, 241),
+    rgb(102, 191, 255),
+    rgb(0, 117, 44),
+    rgb(0, 158, 47),
+    rgb(0, 228, 48),
+    rgb(190, 33, 55),
+    rgb(255, 109, 194),
+    rgb(255, 161, 0),
+    rgb(255, 203, 0),
+    rgb(253, 249, 0)
+  };
+  return Palette::Palette(colours);
+}
+
+static Palette::Colour rgb(byte r, byte g, byte b)
+{
+  return Palette::Colour(r, g, b);
 }

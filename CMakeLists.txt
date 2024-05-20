@@ -10,4 +10,6 @@ project(AntFarm)
 
 set(exe_name "antfarm")
 
+enable_testing()
+
 add_subdirectory(src)

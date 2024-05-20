@@ -54,7 +54,7 @@ class AppState {
     void speed_up();
     void slow_down();
     void reset();
-    Color colour(int index) const;
+    Palette::Colour colour(int index) const;
     void cycle_colour(int row, int col);
     int iterations() const;
     void toggle_show_iterations();

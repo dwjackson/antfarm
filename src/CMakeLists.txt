@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${exe_name} antfarm.cpp ants.cpp drawing.cpp grids.cpp app_state.cpp
-  timer.cpp palette.cpp rules.cpp geometry.cpp scene.cpp keyboard.cpp)
+  timer.cpp palette.cpp rules.cpp geometry.cpp scene.cpp keyboard.cpp mouse.cpp)
 target_compile_options(${exe_name} PRIVATE -Wall -Wextra)
 
 find_package(Raylib 5.0 REQUIRED)
