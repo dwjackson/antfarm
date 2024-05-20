@@ -33,6 +33,7 @@ AppState::AppState(int height, int width, const char *rules, Palette::Palette pa
   m_show_grid = false;
   m_is_paused = false;
   m_show_frame_rate = false;
+  m_is_all_hidden = false;
   set_click_mode(ClickMode::CREATE_ANT);
 }
 
@@ -237,4 +238,14 @@ void AppState::toggle_frame_rate_visible()
 bool AppState::is_frame_rate_visible() const
 {
   return m_show_frame_rate;
+}
+
+void AppState::toggle_hide_all()
+{
+  m_is_all_hidden = !m_is_all_hidden;
+}
+
+bool AppState::is_all_hidden() const
+{
+  return m_is_all_hidden;
 }

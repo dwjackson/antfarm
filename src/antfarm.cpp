@@ -84,6 +84,7 @@ int main(int argc, char *argv[])
     { ' ', [](AppState &state) { state.toggle_pause(); } },
     { 'c', [](AppState &state) { state.toggle_crosshairs(); } },
     { 'g', [](AppState &state) { state.toggle_grid(); } },
+    { 'h', [](AppState &state) { state.toggle_hide_all(); } },
     { 'i', [](AppState &state) { state.toggle_show_iterations(); } },
     { 'm', [](AppState &state) { state.toggle_frame_rate_visible(); }},
     { 'r', [](AppState &state) { state.reset(); } },

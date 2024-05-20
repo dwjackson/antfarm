@@ -46,6 +46,11 @@ void Scene::draw(Drawing::Window &window, const AppState &state)
     drawing->rectangle(pos, rect, RED);
   }
 
+  if (state.is_all_hidden()) {
+    // Do not draw any of the "HUD" elements
+    return;
+  }
+
   /* Draw the HUD */
   int height = GetRenderHeight();
   int width = GetRenderWidth();
