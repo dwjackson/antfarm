@@ -44,7 +44,7 @@ namespace Geometry {
 
   Point Rectangle::center_within(int width, int height)
   {
-    int x = width / 2 - m_width - 2;
+    int x = width / 2 - m_width / 2;
     int y = height / 2 - m_height / 2;
     return Point(x, y);
   }

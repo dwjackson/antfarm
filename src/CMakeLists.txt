@@ -45,3 +45,7 @@ catch_discover_tests(rules_test)
 add_executable(palette_test palette_test.cpp palette.cpp)
 target_link_libraries(palette_test PRIVATE Catch2::Catch2WithMain)
 catch_discover_tests(palette_test)
+
+add_executable(geometry_test geometry_test.cpp geometry.cpp)
+target_link_libraries(geometry_test PRIVATE Catch2::Catch2WithMain)
+catch_discover_tests(geometry_test)
