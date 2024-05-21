@@ -16,7 +16,7 @@
 #include <cstring>
 
 #define CREATE_ANT_STR "Create Ant"
-#define INVERT_CELL_STR "Invert Cell"
+#define CHANGE_COLOUR_STR "Change Colour"
 
 const double tick_min = 0.05;
 const double tick_max = 1.00;
@@ -45,7 +45,7 @@ ClickMode AppState::click_mode() const
 void AppState::set_click_mode(ClickMode mode)
 {
   m_click_mode = mode;
-  const char *click_control = m_click_mode == ClickMode::CREATE_ANT ? CREATE_ANT_STR : INVERT_CELL_STR;
+  const char *click_control = m_click_mode == ClickMode::CREATE_ANT ? CREATE_ANT_STR : CHANGE_COLOUR_STR;
   m_hud = std::format("[CLICK] {} [SPACE] Pause [ESC] Quit [1,2] Change Mode [T] Step Time [+,-] Speed/Slow Time [R] Reset", click_control);
 }
 
